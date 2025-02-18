@@ -124,11 +124,5 @@ A modul az alábbi új mezőket adja hozzá, ahol a belső (angol) elnevezések 
 - **Verziókövetési napló:** A Github repozitóriumban legyen elérhető a fejlesztés minden fázisa, ideértve a verziótagolást, a commit üzeneteket és a kapcsolódó dokumentációt.
 
 ## 8. Kérdések és pontosítások  
-- **PlaceOfBirth típus:** Megerősítve, ez egy string típusú mező.  
-- **MembershipLevel értékek:** Az értékek jelenleg "A", "B", és "C".  
 - **Dropdown konfiguráció:** Minden dropdown értéket a modulban tárolt JSON állományból tölt be, ezáltal a jövőbeni konfiguráció egyszerűsíthető.  
 - **Kalkulációs logika:** A BirthDate mező módosításakor történő automatikus kalkulációkat (Age, NextBirthday) lehet kliens oldalon (onchange esemény) megvalósítani, illetve szerver oldalon az adatok beposztolásakor, hogy az adatkonzisztencia mindig garantált legyen.
-
----
-
-Ez a módosított specifikáció tartalmazza azt az új követelményt is, miszerint a kalkulációs logika szerver oldalon történhet az adatok beposztolásakor. Ha további pontosításokra vagy kérdésekre van szükség, kérem, jelezze!
