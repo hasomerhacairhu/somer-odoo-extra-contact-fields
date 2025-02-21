@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_inherit_exit_reason" model="ir.ui.view">
+            <field name="name">res.partner.form.exit.reason.inherit</field>
+            <field name="model">res.partner</field>
+            <!-- Inherit the standard Contact form -->
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!-- Insert the ExitReason field right after ExitDate or any other field. -->
+                <xpath expr="//field[@name='exit_date']" position="after">
+                    <field name="exit_reason" modifiers="{'invisible': [['exit_date','=',False]]}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
