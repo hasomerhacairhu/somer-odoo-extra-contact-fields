@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_inherit_ssn" model="ir.ui.view">
+            <field name="name">res.partner.form.ssn.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <!-- Insert SSN after category_id or anywhere else you prefer -->
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="ssn"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
