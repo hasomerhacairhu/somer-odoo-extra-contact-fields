@@ -1,5 +1,5 @@
 {
-    'name': 'TShirtSize in Contacts',
+    'name': 'T-Shirt Size in Contacts',
     'version': '18.0.1.0',
     'category': 'Contacts',
     'summary': 'Adds a TShirtSize dropdown field to Contacts, reading size options from JSON',

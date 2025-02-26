@@ -1,5 +1,5 @@
 {
-    'name': 'IDNumber in Contacts',
+    'name': 'ID Number in Contacts',
     'version': '18.0.1.0',
     'category': 'Contacts',
     'summary': 'Adds an IDNumber (string) field to Odoo Contacts',

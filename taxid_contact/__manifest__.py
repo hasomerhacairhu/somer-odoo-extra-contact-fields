@@ -1,5 +1,5 @@
 {
-    'name': 'TaxID in Contacts',
+    'name': 'Tax ID in Contacts',
     'version': '18.0.1.0',
     'category': 'Contacts',
     'summary': 'Adds a TaxID field to Odoo Contacts',

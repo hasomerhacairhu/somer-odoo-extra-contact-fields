@@ -5,7 +5,6 @@ class ResPartner(models.Model):
 
     exit_reason = fields.Text(
         string='Exit Reason',
-        help="Reason for exit. This field is only visible when Exit Date is provided."
     )
 
     @api.onchange('exit_date')

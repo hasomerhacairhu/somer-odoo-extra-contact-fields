@@ -1,5 +1,5 @@
 {
-    'name': 'Nickname for Contacts',
+    'name': 'Nickname in Contacts',
     'version': '18.0.1.0',
     'category': 'Contacts',
     'summary': 'Adds a Nickname field to Odoo Contacts',

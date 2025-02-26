@@ -5,5 +5,4 @@ class ResPartner(models.Model):
 
     birthdate = fields.Date(
         string='Birthday',
-        help='Stores the birthday of this contact as a date.'
     )

@@ -5,5 +5,4 @@ class ResPartner(models.Model):
 
     bank_account_number = fields.Char(
         string='Bank Account Number',
-        help="Stores the contact's bank account number."
     )

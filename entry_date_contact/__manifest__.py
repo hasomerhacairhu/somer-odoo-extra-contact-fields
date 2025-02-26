@@ -1,7 +1,7 @@
 {
-    'name': 'entry_date_contact',
+    'name': 'Entry Date in Contacts',
     'version': '18.0.1.0.0',
-    'category': 'Custom',
+    'category': 'Contacts',
     'summary': 'Adds an EntryDate field to Contacts and updates it when user logs in',
     'description': """ This module adds a 'entry_date' Date field on Contacts (res.partner), 
      which updates dynamically to the user's last login date.""",

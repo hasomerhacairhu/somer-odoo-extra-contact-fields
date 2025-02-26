@@ -7,7 +7,7 @@
 This module adds a custom ExitDate field to Contacts (res.partner), allowing
 users to store the date on which a contact (user) left.
 """,
-    'author': 'Your Name',
+    'author': 'Adrian',
     'license': 'LGPL-3',
     'depends': ['contacts'],
     'data': [

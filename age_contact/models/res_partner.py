@@ -7,7 +7,6 @@ class ResPartner(models.Model):
     age = fields.Integer(
         string='Age',
         compute='_compute_age',
-        help='Computed from the BirthDate field.'
     )
 
     @api.depends('birthdate')

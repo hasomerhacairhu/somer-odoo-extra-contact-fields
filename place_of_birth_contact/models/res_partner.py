@@ -5,5 +5,4 @@ class ResPartner(models.Model):
 
     place_of_birth = fields.Char(
         string='Place of Birth',
-        help="Stores the contact's place of birth."
     )

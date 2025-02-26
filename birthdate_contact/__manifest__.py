@@ -7,7 +7,7 @@
 Adds a date-type field called 'BirthDate' (birthday) to Contacts (res.partner),
 and displays it in the contact form.
 """,
-    'author': 'Your Name',
+    'author': 'Adrian',
     'license': 'LGPL-3',
     'depends': ['contacts'],
     'data': [

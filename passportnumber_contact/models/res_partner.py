@@ -5,5 +5,4 @@ class ResPartner(models.Model):
 
     passport_number = fields.Char(
         string='Passport Number',
-        help="A string field to store the contact's passport number."
     )

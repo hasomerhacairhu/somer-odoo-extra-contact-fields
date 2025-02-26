@@ -1,5 +1,5 @@
 {
-    'name': 'PassportNumber in Contacts',
+    'name': 'Passport Number in Contacts',
     'version': '18.0.1.0',
     'category': 'Contacts',
     'summary': 'Adds a PassportNumber field to Odoo Contacts',

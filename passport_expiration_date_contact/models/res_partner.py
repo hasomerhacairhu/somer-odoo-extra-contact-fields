@@ -5,5 +5,4 @@ class ResPartner(models.Model):
 
     passport_expiration_date = fields.Date(
         string='Passport Expiration Date',
-        help="Stores the contact's passport expiration date."
     )

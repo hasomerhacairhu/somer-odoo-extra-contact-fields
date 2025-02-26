@@ -5,5 +5,4 @@ class ResPartner(models.Model):
 
     id_number = fields.Char(
         string='ID Number',
-        help='A string to store the contact\'s ID number.'
     )
