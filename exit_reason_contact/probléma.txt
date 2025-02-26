@@ -1,1 +1,1 @@
-A dinamikus megjelenítés nem mûködik, mert elvileg külön testreszabott Owl form kell hozzá a 17.-es Odoo verziók óta vagy külön JavaScript snippet.
+A dinamikus megjelenítés nem mûködik, mert elvileg külön testreszabott Owl form kell hozzá a 17.-es Odoo verziók óta vagy külön JavaScript widget.

@@ -4,12 +4,16 @@
         <record id="view_partner_form_inherit_exit_reason" model="ir.ui.view">
             <field name="name">res.partner.form.exit.reason.inherit</field>
             <field name="model">res.partner</field>
-            <!-- Inherit the standard Contact form -->
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <!-- Insert the ExitReason field right after ExitDate or any other field. -->
+                <!-- We'll place the 'exit_reason' near 'exit_date' for clarity, or after category_id -->
                 <xpath expr="//field[@name='exit_date']" position="after">
-                    <field name="exit_reason" modifiers="{'invisible': [['exit_date','=',False]]}"/>
+                    <!-- 
+                         Use 'modifiers' in Odoo 17+ to enforce read-only if exit_date is False.
+                         This means user can't edit 'exit_reason' if exit_date is empty.
+                    -->
+                    <field name="exit_reason" 
+                            modifiers="{'invisible': [['exit_date','=',False]]}"/>
                 </xpath>
             </field>
         </record>

@@ -2,17 +2,14 @@
     'name': 'Exit Reason in Contacts',
     'version': '18.0.1.0',
     'category': 'Contacts',
-    'summary': 'Adds an ExitReason field that is only visible if ExitDate is set',
+    'summary': 'Adds an ExitReason field that is visible only if Exit Date is provided',
     'description': """
-This module adds a field 'ExitReason' to res.partner (Contacts). 
-It will only appear on the form view if 'ExitDate' has a value, and it will 
-disappear again if 'ExitDate' is removed. 
+This module adds a field 'exit_reason' to contacts.
+If the 'exit_date' field (from exit_date_contact) is not set, then the exit_reason field is hidden.
 """,
     'author': 'Adrian',
     'license': 'LGPL-3',
-    'depends': ['exit_date_contact',
-        'contacts' 
-    ],
+    'depends': ['contacts', 'exit_date_contact'],
     'data': [
         'views/res_partner_view.xml',
     ],
