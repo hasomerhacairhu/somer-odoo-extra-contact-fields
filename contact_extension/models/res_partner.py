@@ -3,6 +3,7 @@ from datetime import datetime
 import os
 import json
 
+
 # Dynamically load the membership options from our JSON file
 CONFIG_PATH_1 = os.path.join(
     os.path.dirname(__file__),
@@ -17,6 +18,7 @@ with open(CONFIG_PATH_1, 'r', encoding='utf-8') as f:
 # Convert ["A", "B", "C"] into [(“A”, “A”), (“B”, “B”), (“C”, “C”)]
 MEMBERSHIP_SELECTION = [(val, val) for val in MEMBERSHIP_OPTIONS]
 
+
 # Dynamically load the stakeholder options from our JSON file
 CONFIG_PATH_2 = os.path.join(
     os.path.dirname(__file__),
@@ -29,6 +31,22 @@ with open(CONFIG_PATH_2, 'r', encoding='utf-8') as f:
     STAKEHOLDER_OPTIONS = json.load(f)
 
 STAKEHOLDER_SELECTION = [(val, val) for val in STAKEHOLDER_OPTIONS]
+
+
+# Load T-shirt size options from tshirt_sizes.json at import time
+CONFIG_PATH = os.path.join(
+    os.path.dirname(__file__),
+    '..',  # up one directory
+    'data',
+    'tshirt_sizes.json'
+)
+
+with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+    TSHIRT_SIZE_OPTIONS = json.load(f)
+
+# Convert ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"] to:
+# [("XS","XS"),("S","S"),("M","M"), ... ]
+TSHIRT_SIZE_SELECTION = [(size, size) for size in TSHIRT_SIZE_OPTIONS]
 
 
 
@@ -67,6 +85,10 @@ class ResPartner(models.Model):
     IDNumber = fields.Char(string='ID Number')
     SSN = fields.Char(string='SSN', 
         help='Contact\'s Social Security Number.')
+    TShirtSize = fields.Selection(selection=TSHIRT_SIZE_SELECTION,
+        string='T-Shirt Size',
+        help='Dropdown storing the T-shirt size of the contact.')
+
 
 
 

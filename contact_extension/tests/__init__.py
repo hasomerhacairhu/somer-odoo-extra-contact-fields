@@ -8,3 +8,4 @@ from . import test_stakeholder_group
 from . import test_nickname
 from . import test_idnumber
 from . import test_ssn
+from . import test_tshirt_size
