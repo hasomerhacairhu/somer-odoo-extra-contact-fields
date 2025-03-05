@@ -15,3 +15,4 @@ from . import test_passport_expiration_date
 from . import test_bank_account_number
 from . import test_place_of_birth
 from . import test_is_vaccinated
+from . import test_madrich_training

@@ -96,6 +96,8 @@ class ResPartner(models.Model):
     PlaceOfBirth = fields.Char(string='Place of Birth')
     IsVaccinated = fields.Boolean(string='Is Vaccinated',
         help="Indicates whether the contact is vaccinated.")
+    MadrichTraining = fields.Boolean(string='Madrich Training',
+        help="Indicates whether the contact had Madrich training.")
 
 
 
