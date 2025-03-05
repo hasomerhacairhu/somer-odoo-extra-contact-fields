@@ -61,6 +61,9 @@
                 <xpath expr="//field[@name='IsVaccinated']" position="after">
                     <field name="MadrichTraining"/>
                 </xpath>
+                <xpath expr="//field[@name='BirthDate']" position="after">
+                    <field name="NextBirthday" readonly="1"/>
+                </xpath>
             </field>
         </record>
     </data>

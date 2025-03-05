@@ -98,6 +98,27 @@ class ResPartner(models.Model):
         help="Indicates whether the contact is vaccinated.")
     MadrichTraining = fields.Boolean(string='Madrich Training',
         help="Indicates whether the contact had Madrich training.")
+    NextBirthday = fields.Date(string='Next Birthday',
+        compute='_compute_next_birthday',
+        help="Shows the next upcoming birthday, based on the Birthday field.")
+    @api.depends('BirthDate')
+    def _compute_next_birthday(self):
+        for partner in self:
+            if not partner.BirthDate:
+                partner.NextBirthday = False
+            else:
+                today = fields.Date.today()
+                # Convert to datetime.date for month/day comparison
+                bday_month = partner.BirthDate.month
+                bday_day = partner.BirthDate.day
+
+                current_year_bday = date(today.year, bday_month, bday_day)
+                if current_year_bday < today:
+                    # If birthday already happened this year, use next year
+                    partner.NextBirthday = date(today.year + 1, bday_month, bday_day)
+                else:
+                    # Otherwise, use current year
+                    partner.NextBirthday = current_year_bday
 
 
 
