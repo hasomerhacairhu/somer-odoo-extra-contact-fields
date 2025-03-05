@@ -25,8 +25,11 @@
                 <xpath expr="//field[@name='BirthDate']" position="after">
                     <field name="Age" readonly="1"/>
                 </xpath>
-                <xpath expr="//field[@name='category_id']" position="after">
+                <xpath expr="//field[@name='MembershipLevel']" position="after">
                     <field name="StakeholderGroup"/>
+                </xpath>
+                <xpath expr="//field[@name='ExitReason']" position="after">
+                    <field name="Nickname"/>
                 </xpath>
             </field>
         </record>
