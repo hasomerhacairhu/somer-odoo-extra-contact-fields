@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_inherit_custom_fields" model="ir.ui.view">
+            <field name="name">res.partner.form.custom.fields.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="EntryDate"/>
+                </xpath>
+                <xpath expr="//field[@name='EntryDate']" position="after">
+                    <field name="ExitDate"/>
+                </xpath>
+                <xpath expr="//field[@name='ExitDate']" position="after">
+                    <field name="ExitReason" 
+                    modifiers="{'readonly': 'not record.ExitDate'}"/>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="MembershipLevel"/>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="BirthDate"/>
+                </xpath>
+                <xpath expr="//field[@name='BirthDate']" position="after">
+                    <field name="Age" readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="StakeholderGroup"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

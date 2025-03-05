@@ -1,0 +1,7 @@
+from . import test_res_partner_birthdate
+from . import test_res_partner_age
+from . import test_entry_date
+from . import test_membership_level
+from . import test_exit_date
+from . import test_exit_reason
+from . import test_stakeholder_group
