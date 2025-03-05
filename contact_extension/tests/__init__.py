@@ -10,3 +10,4 @@ from . import test_idnumber
 from . import test_ssn
 from . import test_tshirt_size
 from . import test_taxid
+from . import test_passport_number

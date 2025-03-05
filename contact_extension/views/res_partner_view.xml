@@ -43,6 +43,9 @@
                 <xpath expr="//field[@name='TShirtSize']" position="after">
                     <field name="TaxID"/>
                 </xpath>
+                <xpath expr="//field[@name='TaxID']" position="after">
+                    <field name="PassportNumber"/>
+                </xpath>
             </field>
         </record>
     </data>

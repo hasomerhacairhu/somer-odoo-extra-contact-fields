@@ -90,6 +90,7 @@ class ResPartner(models.Model):
         help='Dropdown storing the T-shirt size of the contact.')
     TaxID = fields.Char(string='Tax ID',
         help='Tax Identification Number for this contact.')
+    PassportNumber = fields.Char(string='Passport Number')
 
 
 
