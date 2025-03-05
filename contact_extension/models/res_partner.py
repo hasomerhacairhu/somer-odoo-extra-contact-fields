@@ -94,6 +94,8 @@ class ResPartner(models.Model):
     PassportExpirationDate = fields.Date(string='Passport Expiration Date')
     BankAccountNumber = fields.Char(string='Bank Account Number')
     PlaceOfBirth = fields.Char(string='Place of Birth')
+    IsVaccinated = fields.Boolean(string='Is Vaccinated',
+        help="Indicates whether the contact is vaccinated.")
 
 
 

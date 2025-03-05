@@ -55,6 +55,9 @@
                 <xpath expr="//field[@name='BankAccountNumber']" position="after">
                     <field name="PlaceOfBirth"/>
                 </xpath>
+                <xpath expr="//field[@name='PlaceOfBirth']" position="after">
+                    <field name="IsVaccinated"/>
+                </xpath>
             </field>
         </record>
     </data>
