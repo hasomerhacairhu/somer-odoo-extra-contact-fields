@@ -52,6 +52,9 @@
                 <xpath expr="//field[@name='PassportExpirationDate']" position="after">
                     <field name="BankAccountNumber"/>
                 </xpath>
+                <xpath expr="//field[@name='BankAccountNumber']" position="after">
+                    <field name="PlaceOfBirth"/>
+                </xpath>
             </field>
         </record>
     </data>
