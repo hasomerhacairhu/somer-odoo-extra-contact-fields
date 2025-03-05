@@ -40,7 +40,7 @@ class ResPartner(models.Model):
     ExitDate = fields.Date(
         string='Exit Date',
         help='Stores the date on which this contact/user exited.')
-    ExitReason = fields.Char()
+    ExitReason = fields.Char(string='Exit Reason')
     @api.onchange('ExitDate')
     def _onchange_exit_date(self):
         # If ExitDate is not provided, clear ExitReason.
