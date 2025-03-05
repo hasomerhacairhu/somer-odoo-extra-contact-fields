@@ -64,6 +64,7 @@ class ResPartner(models.Model):
     StakeholderGroup = fields.Selection(selection=STAKEHOLDER_SELECTION,
         string='Stakeholder Group')
     Nickname = fields.Char(string='Nickname')
+    IDNumber = fields.Char(string='ID Number')
 
 
 
