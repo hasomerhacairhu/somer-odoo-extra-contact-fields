@@ -65,6 +65,8 @@ class ResPartner(models.Model):
         string='Stakeholder Group')
     Nickname = fields.Char(string='Nickname')
     IDNumber = fields.Char(string='ID Number')
+    SSN = fields.Char(string='SSN', 
+        help='Contact\'s Social Security Number.')
 
 
 

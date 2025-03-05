@@ -34,6 +34,9 @@
                 <xpath expr="//field[@name='Nickname']" position="after">
                     <field name="IDNumber"/>
                 </xpath>
+                <xpath expr="//field[@name='IDNumber']" position="after">
+                    <field name="SSN"/>
+                </xpath>
             </field>
         </record>
     </data>
