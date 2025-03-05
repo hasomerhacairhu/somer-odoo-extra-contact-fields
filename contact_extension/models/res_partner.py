@@ -88,7 +88,8 @@ class ResPartner(models.Model):
     TShirtSize = fields.Selection(selection=TSHIRT_SIZE_SELECTION,
         string='T-Shirt Size',
         help='Dropdown storing the T-shirt size of the contact.')
-
+    TaxID = fields.Char(string='Tax ID',
+        help='Tax Identification Number for this contact.')
 
 
 

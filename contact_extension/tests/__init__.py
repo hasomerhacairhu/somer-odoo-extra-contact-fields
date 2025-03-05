@@ -9,3 +9,4 @@ from . import test_nickname
 from . import test_idnumber
 from . import test_ssn
 from . import test_tshirt_size
+from . import test_taxid
