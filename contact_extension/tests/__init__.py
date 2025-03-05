@@ -11,3 +11,4 @@ from . import test_ssn
 from . import test_tshirt_size
 from . import test_taxid
 from . import test_passport_number
+from . import test_passport_expiration_date

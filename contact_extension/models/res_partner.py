@@ -91,6 +91,7 @@ class ResPartner(models.Model):
     TaxID = fields.Char(string='Tax ID',
         help='Tax Identification Number for this contact.')
     PassportNumber = fields.Char(string='Passport Number')
+    PassportExpirationDate = fields.Date(string='Passport Expiration Date')
 
 
 

@@ -46,6 +46,9 @@
                 <xpath expr="//field[@name='TaxID']" position="after">
                     <field name="PassportNumber"/>
                 </xpath>
+                <xpath expr="//field[@name='PassportNumber']" position="after">
+                    <field name="PassportExpirationDate"/>
+                </xpath>
             </field>
         </record>
     </data>
