@@ -67,7 +67,7 @@ class ResPartner(models.Model):
     MembershipLevel = fields.Selection(
         selection=MEMBERSHIP_SELECTION,
         string='Membership Level')
-    BirthDate = fields.Date(string='Birthdate')
+    BirthDate = fields.Date(string='Birthday')
     Age = fields.Integer(string='Age', compute='_computeAge', 
         store=True)
     @api.depends('BirthDate')
@@ -92,6 +92,7 @@ class ResPartner(models.Model):
         help='Tax Identification Number for this contact.')
     PassportNumber = fields.Char(string='Passport Number')
     PassportExpirationDate = fields.Date(string='Passport Expiration Date')
+    BankAccountNumber = fields.Char(string='Bank Account Number')
 
 
 
