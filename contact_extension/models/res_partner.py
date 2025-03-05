@@ -1,5 +1,5 @@
 from odoo import api, fields, models
-from datetime import datetime
+from datetime import date
 import os
 import json
 
@@ -55,19 +55,24 @@ class ResPartner(models.Model):
 
     EntryDate = fields.Date(string='Entry Date', 
         help='Shows the last time the user (linked to this contact) logged in.')
+    
     ExitDate = fields.Date(
         string='Exit Date',
         help='Stores the date on which this contact/user exited.')
+    
     ExitReason = fields.Char(string='Exit Reason')
     @api.onchange('ExitDate')
     def _onchange_exit_date(self):
         # If ExitDate is not provided, clear ExitReason.
         if not self.ExitDate:
             self.ExitReason = ''
+    
     MembershipLevel = fields.Selection(
         selection=MEMBERSHIP_SELECTION,
         string='Membership Level')
+    
     BirthDate = fields.Date(string='Birthday')
+    
     Age = fields.Integer(string='Age', compute='_computeAge', 
         store=True)
     @api.depends('BirthDate')
@@ -79,25 +84,38 @@ class ResPartner(models.Model):
                 records.Age = days_diff // 365
             else:
                 records.Age = 0
+    
     StakeholderGroup = fields.Selection(selection=STAKEHOLDER_SELECTION,
         string='Stakeholder Group')
+    
     Nickname = fields.Char(string='Nickname')
+    
     IDNumber = fields.Char(string='ID Number')
+    
     SSN = fields.Char(string='SSN', 
         help='Contact\'s Social Security Number.')
+    
     TShirtSize = fields.Selection(selection=TSHIRT_SIZE_SELECTION,
         string='T-Shirt Size',
         help='Dropdown storing the T-shirt size of the contact.')
+    
     TaxID = fields.Char(string='Tax ID',
         help='Tax Identification Number for this contact.')
+    
     PassportNumber = fields.Char(string='Passport Number')
+    
     PassportExpirationDate = fields.Date(string='Passport Expiration Date')
+    
     BankAccountNumber = fields.Char(string='Bank Account Number')
+    
     PlaceOfBirth = fields.Char(string='Place of Birth')
+    
     IsVaccinated = fields.Boolean(string='Is Vaccinated',
         help="Indicates whether the contact is vaccinated.")
+    
     MadrichTraining = fields.Boolean(string='Madrich Training',
         help="Indicates whether the contact had Madrich training.")
+    
     NextBirthday = fields.Date(string='Next Birthday',
         compute='_compute_next_birthday',
         help="Shows the next upcoming birthday, based on the Birthday field.")
