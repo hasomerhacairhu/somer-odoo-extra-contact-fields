@@ -3,6 +3,15 @@ from datetime import date
 import os
 import json
 
+# TODO - születésnap, stakeholder, entry, exit (csak, ha entry megvan)
+# , nickname, membership level, 
+# Egy új tabot hozz létre a többinek: SSN, TAX, Bool értékek stb... 
+# logikus csoportosítás!
+# TODO - Változó nevek legyenek intuitívek!
+# TODO - Családi kapcsolatok: Odoo részek újrafelhasználásával: 
+# LIST VIEW (- Meglévő táblázat vezérlőt próbáld újrahasználni - list_view): 
+# 3 oszlop: név, legördülő menü: kapcsolódás fajtái vannak vagy egyéb, harmadik pedig egy link a rokon profiljára, 
+# törlés, KÖLCSÖNÖS MEGJELENÍTÉS
 
 # Dynamically load the membership options from our JSON file
 CONFIG_PATH_1 = os.path.join(
@@ -60,6 +69,8 @@ class ResPartner(models.Model):
         string='Exit Date',
         help='Stores the date on which this contact/user exited.')
     
+    # TODO - todo note: EntryDate-nél, hogy mikor lépett be a mozgalomba!
+    # TODO - todo note: ExitReason-nél tűnjön el a field, ha nincs ExitDate
     ExitReason = fields.Char(string='Exit Reason')
     @api.onchange('ExitDate')
     def _onchange_exit_date(self):
@@ -73,6 +84,7 @@ class ResPartner(models.Model):
     
     BirthDate = fields.Date(string='Birthday')
     
+    # TODO - todo note: Backend-en vagy Frontend-en számloja?
     Age = fields.Integer(string='Age', compute='_computeAge', 
         store=True)
     @api.depends('BirthDate')
