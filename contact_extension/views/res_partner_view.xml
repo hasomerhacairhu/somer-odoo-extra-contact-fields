@@ -13,8 +13,7 @@
                     <field name="ExitDate"/>
                 </xpath>
                 <xpath expr="//field[@name='ExitDate']" position="after">
-                    <field name="ExitReason" 
-                    invisible="not ExitDate"/>
+                    <field name="ExitReason" invisible="not ExitDate"/>
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="MembershipLevel"/>
