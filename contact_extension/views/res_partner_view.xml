@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="view_partner_form_inherit_custom_fields" model="ir.ui.view">
-            <field name="name">res.partner.form.custom.fields.inherit</field>
+            <field name="name">res.partner.form.inherit.custom.fields</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
@@ -14,7 +14,7 @@
                 </xpath>
                 <xpath expr="//field[@name='ExitDate']" position="after">
                     <field name="ExitReason" 
-                    modifiers="{'readonly': 'not record.ExitDate'}"/>
+                    modifiers="{'invisible': [('ExitDate', '==', 'hide')]}"/>
                 </xpath>
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="MembershipLevel"/>

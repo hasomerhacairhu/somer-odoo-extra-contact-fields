@@ -7,7 +7,9 @@ import json
 # , nickname, membership level, 
 # Egy új tabot hozz létre a többinek: SSN, TAX, Bool értékek stb... 
 # logikus csoportosítás!
-# TODO - Változó nevek legyenek intuitívek!
+
+# TODO - Változó nevek legyenek intuitívek! - KÉSZ
+
 # TODO - Családi kapcsolatok: Odoo részek újrafelhasználásával: 
 # LIST VIEW (- Meglévő táblázat vezérlőt próbáld újrahasználni - list_view): 
 # 3 oszlop: név, legördülő menü: kapcsolódás fajtái vannak vagy egyéb, harmadik pedig egy link a rokon profiljára, 
@@ -62,16 +64,16 @@ TSHIRT_SIZE_SELECTION = [(size, size) for size in TSHIRT_SIZE_OPTIONS]
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    EntryDate = fields.Date(string='Entry Date', 
-        help='Shows the last time the user (linked to this contact) logged in.')
+    EntryDate = fields.Date(string='Entry Date'
+        , help = 'A mozgalomba való belépés dátuma')
     
-    ExitDate = fields.Date(
-        string='Exit Date',
-        help='Stores the date on which this contact/user exited.')
+    ExitDate = fields.Date(string='Exit Date'
+        , help = 'A mozgalomból való kilépés dátuma')
     
     # TODO - todo note: EntryDate-nél, hogy mikor lépett be a mozgalomba!
     # TODO - todo note: ExitReason-nél tűnjön el a field, ha nincs ExitDate
-    ExitReason = fields.Char(string='Exit Reason')
+    ExitReason = fields.Char(string='Exit Reason'
+        , help = 'A mozgalomból való kilépés oka')
     @api.onchange('ExitDate')
     def _onchange_exit_date(self):
         # If ExitDate is not provided, clear ExitReason.
@@ -150,22 +152,3 @@ class ResPartner(models.Model):
                     # Otherwise, use current year
                     partner.NextBirthday = current_year_bday
 
-
-
-class ResUsers(models.Model):
-    _inherit = 'res.users'
-
-    # Whenever the built-in 'login_date' changes, we push that date to the related partner.
-    @api.model
-    def write(self, vals):
-        res = super(ResUsers, self).write(vals)
-
-        if 'login_date' in vals:
-            for user in self:
-                if user.partner_id:
-                    # login_date is a datetime; convert to date if you want only the date part.
-                    if user.login_date:
-                        user.partner_id.entry_date = fields.Date.to_date(user.login_date)
-                    else:
-                        user.partner_id.entry_date = False
-        return res
