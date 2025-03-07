@@ -14,14 +14,14 @@ import json
 # törlés, KÖLCSÖNÖS MEGJELENÍTÉS
 
 # Dynamically load the membership options from our JSON file
-CONFIG_PATH_1 = os.path.join(
+CONFIG_PATH_MEMBERSHIP = os.path.join(
     os.path.dirname(__file__),
     '..',  # up one folder
     'data',
     'membership_levels.json'
 )
 
-with open(CONFIG_PATH_1, 'r', encoding='utf-8') as f:
+with open(CONFIG_PATH_MEMBERSHIP, 'r', encoding='utf-8') as f:
     MEMBERSHIP_OPTIONS = json.load(f)
 
 # Convert ["A", "B", "C"] into [(“A”, “A”), (“B”, “B”), (“C”, “C”)]
@@ -29,28 +29,28 @@ MEMBERSHIP_SELECTION = [(val, val) for val in MEMBERSHIP_OPTIONS]
 
 
 # Dynamically load the stakeholder options from our JSON file
-CONFIG_PATH_2 = os.path.join(
+CONFIG_PATH_STAKEHOLDER = os.path.join(
     os.path.dirname(__file__),
     '..',  # up one folder
     'data',
     'stakeholder_groups.json'
 )
 
-with open(CONFIG_PATH_2, 'r', encoding='utf-8') as f:
+with open(CONFIG_PATH_STAKEHOLDER, 'r', encoding='utf-8') as f:
     STAKEHOLDER_OPTIONS = json.load(f)
 
 STAKEHOLDER_SELECTION = [(val, val) for val in STAKEHOLDER_OPTIONS]
 
 
 # Load T-shirt size options from tshirt_sizes.json at import time
-CONFIG_PATH = os.path.join(
+CONFIG_PATH_TSHIRT = os.path.join(
     os.path.dirname(__file__),
     '..',  # up one directory
     'data',
     'tshirt_sizes.json'
 )
 
-with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+with open(CONFIG_PATH_TSHIRT, 'r', encoding='utf-8') as f:
     TSHIRT_SIZE_OPTIONS = json.load(f)
 
 # Convert ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"] to:
