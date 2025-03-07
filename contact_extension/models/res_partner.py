@@ -8,7 +8,7 @@ import json
 # Egy új tabot hozz létre a többinek: SSN, TAX, Bool értékek stb... 
 # logikus csoportosítás!
 
-# TODO - Változó nevek legyenek intuitívek! - KÉSZ
+# +TODO - Változó nevek legyenek intuitívek!
 
 # TODO - Családi kapcsolatok: Odoo részek újrafelhasználásával: 
 # LIST VIEW (- Meglévő táblázat vezérlőt próbáld újrahasználni - list_view): 
@@ -70,8 +70,8 @@ class ResPartner(models.Model):
     ExitDate = fields.Date(string='Exit Date'
         , help = 'A mozgalomból való kilépés dátuma')
     
-    # TODO - todo note: EntryDate-nél, hogy mikor lépett be a mozgalomba!
-    # TODO - todo note: ExitReason-nél tűnjön el a field, ha nincs ExitDate
+    # +TODO - todo note: EntryDate-nél, hogy mikor lépett be a mozgalomba!
+    # +TODO - todo note: ExitReason-nél tűnjön el a field, ha nincs ExitDate
     ExitReason = fields.Char(string='Exit Reason'
         , help = 'A mozgalomból való kilépés oka')
     @api.onchange('ExitDate')
@@ -86,7 +86,10 @@ class ResPartner(models.Model):
     
     BirthDate = fields.Date(string='Birthday')
     
-    # TODO - todo note: Backend-en vagy Frontend-en számloja?
+    # +TODO - todo note: Backend-en vagy Frontend-en számloja? 
+    # A válasz: A Backend-en számolódik, 
+    # a kódon belül mindig újraszámolódik az @api.depends-nek köszönhetően 
+    # és a Frontend-en csak szimplán megjelenik a böngészőn
     Age = fields.Integer(string='Age', compute='_computeAge', 
         store=True)
     @api.depends('BirthDate')
