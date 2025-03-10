@@ -5,8 +5,9 @@
     'category': 'Custom',
     'author': 'Adrian',
     'license': 'LGPL-3',
-    'depends': ['base'],
-    'data': ['views/res_partner_view.xml'],
+    'depends': ['contacts'],
+    'data': ['views/res_partner_view.xml', 
+             'security/ir.model.access.csv'],
     'installable': True,
     'application': True,
     'auto_install': False
