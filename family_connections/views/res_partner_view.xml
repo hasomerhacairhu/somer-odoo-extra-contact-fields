@@ -3,21 +3,12 @@
     <record id="view_partner_form_inherit_family_relations" model="ir.ui.view">
         <field name="name">res.partner.form.family.relations</field>
         <field name="model">res.partner</field>
-        <!--<field name="priority">200</field> <!- just for testing -->
         <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">999</field>
         <field name="arch" type="xml">
-            <!-- Insert after or before an existing page, e.g. "Contacts & Addresses" -->
-            <xpath expr="//page[@name='contact_addresses']" position="after">
+            <xpath expr="//sheet/notebook" position="inside">
                 <page name="family_connections" string="Family Connections">
-                    <field name="relation_ids" context="{'default_partner_id': active_id}" nolabel="1">
-                        <tree editable="bottom">
-                            <!-- 1st column: Name of related contact -->
-                            <field name="related_partner_name" readonly="1"/>
-                            <!-- 2nd column: Relationship (selection field) -->
-                            <field name="relationship_type"/>
-                            <!-- 3rd column: Link to that contact -->
-                            <field name="related_partner_id"/>
-                        </tree>
+                    <field name="relation_ids" mode="list,form" nolabel="1">
                     </field>
                 </page>
             </xpath>
