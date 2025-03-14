@@ -1,15 +1,14 @@
 <odoo>
     <!-- Tree view for the child model (res.partner.family.relation) -->
-    <record id="view_partner_family_relation_tree" model="ir.ui.view">
-        <field name="name">res.partner.family.relation.tree</field>
+    <record id="view_partner_family_relation_list" model="ir.ui.view">
+        <field name="name">res.partner.family.relation.list</field>
         <field name="type">list</field>
         <field name="model">res.partner.family.relation</field>
         <field name="arch" type="xml">
             <list editable="bottom">
                 <!-- columns from your res.partner.family.relation model -->
-                <field name="related_partner_name" readonly="1"/>
-                <field name="relationship_type"/>
                 <field name="related_partner_id"/>
+                <field name="relationship_type"/>
             </list>
         </field>
     </record>

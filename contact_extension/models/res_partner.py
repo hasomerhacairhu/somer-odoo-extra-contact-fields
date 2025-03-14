@@ -10,10 +10,12 @@ import json
 
 # +TODO - Változó nevek legyenek intuitívek!
 
-# TODO - Családi kapcsolatok: Odoo részek újrafelhasználásával: 
+# +TODO - Családi kapcsolatok: Odoo részek újrafelhasználásával: 
 # LIST VIEW (- Meglévő táblázat vezérlőt próbáld újrahasználni - list_view): 
 # 3 oszlop: név, legördülő menü: kapcsolódás fajtái vannak vagy egyéb, harmadik pedig egy link a rokon profiljára, 
-# törlés, KÖLCSÖNÖS MEGJELENÍTÉS
+# törlés, KÖLCSÖNÖS MEGJELENÍTÉS 
+# A harmadik link-es oszlop az szükséges? 
+# A Many2One mezőnek egy beépített funkciója az internal link.
 
 # Dynamically load the membership options from our JSON file
 CONFIG_PATH_MEMBERSHIP = os.path.join(

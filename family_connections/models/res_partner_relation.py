@@ -26,54 +26,40 @@ class ResPartnerFamilyRelation(models.Model):
         required=True,
         ondelete='cascade'
     )
-    # Display name of the related partner in the first column:
-    related_partner_name = fields.Char(
-        string='Contact Name',
-        related='related_partner_id.name',
-        store=False,
-        readonly=True
-    )
-    # Relationship type selection:
     relationship_type = fields.Selection(
         [
-            ('mother', 'Mother'),
-            ('father', 'Father'),
-            ('step_mother', 'Step-mother'),
-            ('step_father', 'Step-father'),
-            ('daughter', 'Daughter'),
-            ('son', 'Son'),
-            ('step_daughter', 'Step-daughter'),
-            ('step_son', 'Step-son'),
+        # Parent/Child
+        ('parent', 'Parent'),
+        ('child', 'Child'),
+        ('step_parent', 'Step-parent'),
+        ('step_child', 'Step-child'),
 
-            ('sister', 'Sister'),
-            ('brother', 'Brother'),
-            ('half_sister', 'Half-sister'),
-            ('half_brother', 'Half-brother'),
-            ('step_sister', 'Step-sister'),
-            ('step_brother', 'Step-brother'),
+        # Siblings
+        ('sibling', 'Sibling'),
+        ('half_sibling', 'Half-sibling'),
+        ('step_sibling', 'Step-sibling'),
 
-            ('spouse', 'Spouse'),
-            ('ex_spouse', 'Ex-Spouse'),
-            ('fiance', 'Fiancé(e)'),
+        # Spouse / Engagement
+        ('spouse', 'Spouse'),
+        ('ex_spouse', 'Ex-Spouse'),
+        ('fiance', 'Fiancé(e)'),
 
-            ('grandmother', 'Grandmother'),
-            ('grandfather', 'Grandfather'),
-            ('granddaughter', 'Granddaughter'),
-            ('grandson', 'Grandson'),
+        # Grandparent / Grandchild
+        ('grandparent', 'Grandparent'),
+        ('grandchild', 'Grandchild'),
 
-            ('aunt', 'Aunt'),
-            ('uncle', 'Uncle'),
-            ('niece', 'Niece'),
-            ('nephew', 'Nephew'),
+        # Aunt/Uncle vs. Niece/Nephew
+        ('aunt_or_uncle', 'Aunt/Uncle'),
+        ('niece_or_nephew', 'Niece/Nephew'),
 
-            ('cousin', 'Cousin'),
+        # Cousin
+        ('cousin', 'Cousin'),
 
-            ('father_in_law', 'Father-in-law'),
-            ('mother_in_law', 'Mother-in-law'),
-            ('brother_in_law', 'Brother-in-law'),
-            ('sister_in_law', 'Sister-in-law'),
-            ('son_in_law', 'Son-in-law'),
-            ('daughter_in_law', 'Daughter-in-law')
+        # In-laws
+        ('parent_in_law', 'Parent-in-law'),
+        ('child_in_law', 'Child-in-law'),
+        ('brother_in_law', 'Brother-in-law'),
+        ('sister_in_law', 'Sister-in-law'),
         ],
         string='Relationship',
         required=True,
@@ -97,14 +83,12 @@ class ResPartnerFamilyRelation(models.Model):
             )
             if reciprocal_type:
                 # Create the 'opposite' side, passing skip_reciprocal=True to avoid loops
-                self.create(
+                self.with_context(skip_reciprocal=True).create(
                     {
                         'partner_id': record.related_partner_id.id,
                         'related_partner_id': record.partner_id.id,
                         'relationship_type': reciprocal_type,
                     },
-                    # pass context with skip_reciprocal
-                    context=dict(self.env.context, skip_reciprocal=True),
                 )
 
         return record
@@ -158,44 +142,51 @@ class ResPartnerFamilyRelation(models.Model):
     def _get_reciprocal_relationship_type(self, rel_type):
         """Return the reciprocal relationship type, if any, for a given type."""
         reciprocal_map = {
-            'mother': 'daughter',
-        'father': 'son',
-        'step_mother': 'step_daughter',
-        'step_father': 'step_son',
+        # Parent/child relationships
+        'mother': 'child',
+        'father': 'child',
+        'step_mother': 'step_child',
+        'step_father': 'step_child',
 
-        'daughter': 'mother',
-        'son': 'father',
-        'step_daughter': 'step_mother',
-        'step_son': 'step_father',
+        'daughter': 'parent',
+        'son': 'parent',
+        'step_daughter': 'step_parent',
+        'step_son': 'step_parent',
 
-        'sister': 'sister',
-        'brother': 'brother',
-        'half_sister': 'half_sister',
-        'half_brother': 'half_brother',
-        'step_sister': 'step_sister',
-        'step_brother': 'step_brother',
+        # Siblings
+        'sibling': 'sibling',
+        'sibling': 'sibling',
+        'half_sibling': 'half_sibling',
+        'half_sibling': 'half_sibling',
+        'step_sibling': 'step_sibling',
+        'step_sibling': 'step_sibling',
 
+        # Spouse relationships
         'spouse': 'spouse',
         'ex_spouse': 'ex_spouse',
         'fiance': 'fiance',
 
-        'grandmother': 'granddaughter',
-        'grandfather': 'grandson',
-        'granddaughter': 'grandmother',
-        'grandson': 'grandfather',
+        # Grandparent/grandchild relationships
+        'grandmother': 'grandchild',
+        'grandfather': 'grandchild',
+        'grandchild': 'grandparent',
+        'grandson': 'grandparent',
 
-        'aunt': 'niece',
-        'uncle': 'nephew',
-        'niece': 'aunt',
-        'nephew': 'uncle',
+        # Aunts/uncles, nieces/nephews
+        'aunt': 'niece/nephew',
+        'uncle': 'niece/nephew',
+        'niece': 'aunt/uncle',
+        'nephew': 'aunt/uncle',
 
+        # Cousins
         'cousin': 'cousin',
 
-        'father_in_law': 'son_in_law',
-        'mother_in_law': 'daughter_in_law',
-        'brother_in_law': 'brother_in_law',
+        # In-laws
+        'father_in_law': 'child_in_law',
+        'mother_in_law': 'child_in_law',
+        'brother_in_law': 'brother_in_law',  # symmetrical by default
         'sister_in_law': 'sister_in_law',
-        'son_in_law': 'father_in_law',
-        'daughter_in_law': 'mother_in_law'
+        'son_in_law': 'parent_in_law',
+        'daughter_in_law': 'parent_in_law',
         }
         return reciprocal_map.get(rel_type, False)

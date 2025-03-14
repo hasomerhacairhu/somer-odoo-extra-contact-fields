@@ -8,8 +8,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook" position="inside">
                 <page name="family_connections" string="Family Connections">
-                    <field name="relation_ids" mode="list,form" nolabel="1">
-                    </field>
+                    <field name="relation_ids" mode="list,form"/>
                 </page>
             </xpath>
         </field>
