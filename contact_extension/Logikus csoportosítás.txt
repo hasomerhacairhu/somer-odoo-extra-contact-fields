@@ -1,0 +1,3 @@
+1. csoport: Nickname, Place of Birth, Birthday, Next Birthday, Age, Membership level, Stakeholder Group, T-Shirt Size, Is Vaccinated, Madrich Training, Entry Date, Exit Date, Exit Reason
+
+2. csoport: ID Number, SSN, Tax ID, Passport Number, Passport Expiration Date, Bank Account Number

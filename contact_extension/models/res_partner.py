@@ -3,7 +3,7 @@ from datetime import date
 import os
 import json
 
-# TODO - születésnap, stakeholder, entry, exit (csak, ha entry megvan)
+# +TODO - születésnap, stakeholder, entry, exit (csak, ha entry megvan)
 # , nickname, membership level, 
 # Egy új tabot hozz létre a többinek: SSN, TAX, Bool értékek stb... 
 # logikus csoportosítás!

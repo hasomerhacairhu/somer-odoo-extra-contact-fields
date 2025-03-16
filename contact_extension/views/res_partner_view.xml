@@ -1,69 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="view_partner_form_inherit_custom_fields" model="ir.ui.view">
-            <field name="name">res.partner.form.inherit.custom.fields</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="EntryDate"/>
-                </xpath>
-                <xpath expr="//field[@name='EntryDate']" position="after">
-                    <field name="ExitDate"/>
-                </xpath>
-                <xpath expr="//field[@name='ExitDate']" position="after">
-                    <field name="ExitReason" invisible="not ExitDate"/>
-                </xpath>
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="MembershipLevel"/>
-                </xpath>
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="BirthDate"/>
-                </xpath>
-                <xpath expr="//field[@name='BirthDate']" position="after">
-                    <field name="Age" readonly="1"/>
-                </xpath>
-                <xpath expr="//field[@name='MembershipLevel']" position="after">
-                    <field name="StakeholderGroup"/>
-                </xpath>
-                <xpath expr="//field[@name='ExitReason']" position="after">
-                    <field name="Nickname"/>
-                </xpath>
-                <xpath expr="//field[@name='Nickname']" position="after">
-                    <field name="IDNumber"/>
-                </xpath>
-                <xpath expr="//field[@name='IDNumber']" position="after">
-                    <field name="SSN"/>
-                </xpath>
-                <xpath expr="//field[@name='SSN']" position="after">
-                    <field name="TShirtSize"/>
-                </xpath>
-                <xpath expr="//field[@name='TShirtSize']" position="after">
-                    <field name="TaxID"/>
-                </xpath>
-                <xpath expr="//field[@name='TaxID']" position="after">
-                    <field name="PassportNumber"/>
-                </xpath>
-                <xpath expr="//field[@name='PassportNumber']" position="after">
-                    <field name="PassportExpirationDate"/>
-                </xpath>
-                <xpath expr="//field[@name='PassportExpirationDate']" position="after">
-                    <field name="BankAccountNumber"/>
-                </xpath>
-                <xpath expr="//field[@name='BankAccountNumber']" position="after">
-                    <field name="PlaceOfBirth"/>
-                </xpath>
-                <xpath expr="//field[@name='PlaceOfBirth']" position="after">
-                    <field name="IsVaccinated"/>
-                </xpath>
-                <xpath expr="//field[@name='IsVaccinated']" position="after">
-                    <field name="MadrichTraining"/>
-                </xpath>
-                <xpath expr="//field[@name='BirthDate']" position="after">
-                    <field name="NextBirthday" readonly="1"/>
-                </xpath>
-            </field>
-        </record>
-    </data>
+  <data>
+    <record id="view_partner_form_inherit_custom_fields" model="ir.ui.view">
+      <field name="name">res.partner.form.inherit.custom.fields</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="arch" type="xml">
+
+        <xpath expr="//field[@name='vat']" position="replace">
+          <group colspan="2">
+            <group>
+              <field name="IDNumber"/>
+              <field name="SSN"/>
+              <field name="TaxID"/>
+              <field name="PassportNumber"/>
+              <field name="PassportExpirationDate"/>
+              <field name="BankAccountNumber"/>
+            </group>
+            <group>
+              <field name="Nickname"/>
+              <field name="PlaceOfBirth"/>
+              <field name="BirthDate"/>
+              <field name="NextBirthday" readonly="1"/>
+              <field name="Age" readonly="1"/>
+              <field name="MembershipLevel"/>
+              <field name="StakeholderGroup"/>
+              <field name="TShirtSize"/>
+              <field name="IsVaccinated"/>
+              <field name="MadrichTraining"/>
+              <field name="EntryDate"/>
+              <field name="ExitDate"/>
+              <field name="ExitReason" invisible="not ExitDate"/>
+            </group>
+          </group>
+        </xpath>
+
+      </field>
+    </record>
+  </data>
 </odoo>
