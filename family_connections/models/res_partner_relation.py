@@ -10,8 +10,8 @@ class ResPartner(models.Model):
         string='Family Connections'
     )
 
-# TODO: bug az update-nél
-# TODO: bug új felvitelnél (3. sor)
+# +TODO: időnként bug új felvitelnél a family relations-ben, 
+# TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
 # TODO: contact extension blank space minimalizálás, optimális elhelyezés, csoportosítás az rendben!
 
 class ResPartnerFamilyRelation(models.Model):
@@ -146,51 +146,38 @@ class ResPartnerFamilyRelation(models.Model):
     def _get_reciprocal_relationship_type(self, rel_type):
         """Return the reciprocal relationship type, if any, for a given type."""
         reciprocal_map = {
-        # Parent/child relationships
-        'mother': 'child',
-        'father': 'child',
-        'step_mother': 'step_child',
-        'step_father': 'step_child',
+        # Parent <-> Child
+        'parent': 'child',
+        'child': 'parent',
 
-        'daughter': 'parent',
-        'son': 'parent',
-        'step_daughter': 'step_parent',
-        'step_son': 'step_parent',
+        'step_parent': 'step_child',
+        'step_child': 'step_parent',
 
-        # Siblings
-        'sibling': 'sibling',
+        # Sibling relationships
         'sibling': 'sibling',
         'half_sibling': 'half_sibling',
-        'half_sibling': 'half_sibling',
-        'step_sibling': 'step_sibling',
         'step_sibling': 'step_sibling',
 
-        # Spouse relationships
+        # Spouse
         'spouse': 'spouse',
         'ex_spouse': 'ex_spouse',
         'fiance': 'fiance',
 
-        # Grandparent/grandchild relationships
-        'grandmother': 'grandchild',
-        'grandfather': 'grandchild',
+        # Grandparent <-> Grandchild
+        'grandparent': 'grandchild',
         'grandchild': 'grandparent',
-        'grandson': 'grandparent',
 
-        # Aunts/uncles, nieces/nephews
-        'aunt': 'niece/nephew',
-        'uncle': 'niece/nephew',
-        'niece': 'aunt/uncle',
-        'nephew': 'aunt/uncle',
+        # Aunt/Uncle vs. Niece/Nephew
+        'aunt_or_uncle': 'niece_or_nephew',
+        'niece_or_nephew': 'aunt_or_uncle',
 
-        # Cousins
+        # Cousin
         'cousin': 'cousin',
 
         # In-laws
-        'father_in_law': 'child_in_law',
-        'mother_in_law': 'child_in_law',
-        'brother_in_law': 'brother_in_law',  # symmetrical by default
+        'parent_in_law': 'child_in_law',
+        'child_in_law': 'parent_in_law',
+        'brother_in_law': 'brother_in_law',
         'sister_in_law': 'sister_in_law',
-        'son_in_law': 'parent_in_law',
-        'daughter_in_law': 'parent_in_law',
         }
         return reciprocal_map.get(rel_type, False)
