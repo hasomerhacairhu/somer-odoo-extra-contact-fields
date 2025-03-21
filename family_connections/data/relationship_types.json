@@ -1,0 +1,28 @@
+[
+    ["parent", "Parent"],
+    ["child", "Child"],
+    ["step_parent", "Step-parent"],
+    ["step_child", "Step-child"],
+  
+    ["sibling", "Sibling"],
+    ["half_sibling", "Half-sibling"],
+    ["step_sibling", "Step-sibling"],
+  
+    ["spouse", "Spouse"],
+    ["ex_spouse", "Ex-Spouse"],
+    ["fiance", "Fiancé(e)"],
+  
+    ["grandparent", "Grandparent"],
+    ["grandchild", "Grandchild"],
+  
+    ["aunt_or_uncle", "Aunt/Uncle"],
+    ["niece_or_nephew", "Niece/Nephew"],
+  
+    ["cousin", "Cousin"],
+  
+    ["parent_in_law", "Parent-in-law"],
+    ["child_in_law", "Child-in-law"],
+    ["brother_in_law", "Brother-in-law"],
+    ["sister_in_law", "Sister-in-law"]
+  ]
+  

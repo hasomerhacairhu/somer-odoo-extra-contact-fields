@@ -1,4 +1,17 @@
-from odoo import api, fields, models
+# +TODO: időnként bug új felvitelnél a family relations-ben, 
+# +TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
+# TODO: contact extension blank space minimalizálás, optimális elhelyezés, csoportosítás az rendben!
+
+import json
+from odoo import api, fields, models, tools
+
+REL_TYPES_PATH = 'family_connections/data/relationship_types.json'
+RECIP_MAP_PATH = 'family_connections/data/reciprocal_map.json'
+
+def load_json_file(path):
+    """Utility to load a JSON file from the module."""
+    with tools.file_open(path, 'r') as f:
+        return json.load(f)
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -10,10 +23,6 @@ class ResPartner(models.Model):
         string='Family Connections'
     )
 
-# +TODO: időnként bug új felvitelnél a family relations-ben, 
-# TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
-# TODO: contact extension blank space minimalizálás, optimális elhelyezés, csoportosítás az rendben!
-
 class ResPartnerFamilyRelation(models.Model):
     _name = 'res.partner.family.relation'
     _description = 'Family Relation Between Two Contacts'
@@ -24,47 +33,24 @@ class ResPartnerFamilyRelation(models.Model):
         required=True,
         ondelete='cascade'
     )
+
     related_partner_id = fields.Many2one(
         'res.partner',
         string='Related Contact',
         required=True,
         ondelete='cascade'
     )
+
+    @api.model
+    def _get_relationship_types(self):
+        """
+        Reads 'relationship_types.json' and returns
+        a list of (value, label) pairs for the Selection field.
+        """
+        return load_json_file(REL_TYPES_PATH)
+
     relationship_type = fields.Selection(
-        [
-        # Parent/Child
-        ('parent', 'Parent'),
-        ('child', 'Child'),
-        ('step_parent', 'Step-parent'),
-        ('step_child', 'Step-child'),
-
-        # Siblings
-        ('sibling', 'Sibling'),
-        ('half_sibling', 'Half-sibling'),
-        ('step_sibling', 'Step-sibling'),
-
-        # Spouse / Engagement
-        ('spouse', 'Spouse'),
-        ('ex_spouse', 'Ex-Spouse'),
-        ('fiance', 'Fiancé(e)'),
-
-        # Grandparent / Grandchild
-        ('grandparent', 'Grandparent'),
-        ('grandchild', 'Grandchild'),
-
-        # Aunt/Uncle vs. Niece/Nephew
-        ('aunt_or_uncle', 'Aunt/Uncle'),
-        ('niece_or_nephew', 'Niece/Nephew'),
-
-        # Cousin
-        ('cousin', 'Cousin'),
-
-        # In-laws
-        ('parent_in_law', 'Parent-in-law'),
-        ('child_in_law', 'Child-in-law'),
-        ('brother_in_law', 'Brother-in-law'),
-        ('sister_in_law', 'Sister-in-law'),
-        ],
+        selection=lambda self: self._get_relationship_types(),
         string='Relationship',
         required=True,
     )
@@ -144,40 +130,9 @@ class ResPartnerFamilyRelation(models.Model):
         return result
 
     def _get_reciprocal_relationship_type(self, rel_type):
-        """Return the reciprocal relationship type, if any, for a given type."""
-        reciprocal_map = {
-        # Parent <-> Child
-        'parent': 'child',
-        'child': 'parent',
-
-        'step_parent': 'step_child',
-        'step_child': 'step_parent',
-
-        # Sibling relationships
-        'sibling': 'sibling',
-        'half_sibling': 'half_sibling',
-        'step_sibling': 'step_sibling',
-
-        # Spouse
-        'spouse': 'spouse',
-        'ex_spouse': 'ex_spouse',
-        'fiance': 'fiance',
-
-        # Grandparent <-> Grandchild
-        'grandparent': 'grandchild',
-        'grandchild': 'grandparent',
-
-        # Aunt/Uncle vs. Niece/Nephew
-        'aunt_or_uncle': 'niece_or_nephew',
-        'niece_or_nephew': 'aunt_or_uncle',
-
-        # Cousin
-        'cousin': 'cousin',
-
-        # In-laws
-        'parent_in_law': 'child_in_law',
-        'child_in_law': 'parent_in_law',
-        'brother_in_law': 'brother_in_law',
-        'sister_in_law': 'sister_in_law',
-        }
+        """
+        Return the reciprocal relationship type, if any, for a given type,
+        based on 'reciprocal_map.json'.
+        """
+        reciprocal_map = load_json_file(RECIP_MAP_PATH)
         return reciprocal_map.get(rel_type, False)
