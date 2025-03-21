@@ -6,7 +6,7 @@
         <field name="model">res.partner.family.relation</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <!-- columns from your res.partner.family.relation model -->
+                <!-- columns from res.partner.family.relation model -->
                 <field name="related_partner_id"/>
                 <field name="relationship_type"/>
             </list>

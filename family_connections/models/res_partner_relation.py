@@ -10,6 +10,10 @@ class ResPartner(models.Model):
         string='Family Connections'
     )
 
+# TODO: bug az update-nél
+# TODO: bug új felvitelnél (3. sor)
+# TODO: contact extension blank space minimalizálás, optimális elhelyezés, csoportosítás az rendben!
+
 class ResPartnerFamilyRelation(models.Model):
     _name = 'res.partner.family.relation'
     _description = 'Family Relation Between Two Contacts'
