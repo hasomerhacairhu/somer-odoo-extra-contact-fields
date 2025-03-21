@@ -1,6 +1,5 @@
 # +TODO: időnként bug új felvitelnél a family relations-ben, 
 # +TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
-# TODO: contact extension blank space minimalizálás, optimális elhelyezés, csoportosítás az rendben!
 
 import json
 from odoo import api, fields, models, tools

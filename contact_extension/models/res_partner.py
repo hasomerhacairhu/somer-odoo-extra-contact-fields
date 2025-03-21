@@ -17,6 +17,9 @@ import json
 # A harmadik link-es oszlop az szükséges? 
 # A Many2One mezőnek egy beépített funkciója az internal link.
 
+# TODO: contact extension blank space minimalizálás, 
+# optimális elhelyezés, csoportosítás az rendben!
+
 # Dynamically load the membership options from our JSON file
 CONFIG_PATH_MEMBERSHIP = os.path.join(
     os.path.dirname(__file__),
@@ -66,6 +69,28 @@ TSHIRT_SIZE_SELECTION = [(size, size) for size in TSHIRT_SIZE_OPTIONS]
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    title = fields.Many2one(
+    'res.partner.title',
+    string="Title"
+)
+
+    function = fields.Selection(
+    selection=[
+        ('doctor', 'Doctor'),
+        ('professor', 'Professor'),
+        ('madam', 'Madam'),
+        ('miss', 'Miss'),
+        ('mister', 'Mister'),
+    ],
+    string='Job Position'
+)
+    
+    phone = fields.Char(string='Phone')
+
+    email = fields.Char(string='Email')
+
+    website = fields.Char(string='Website')
+    
     EntryDate = fields.Date(string='Entry Date'
         , help = 'A mozgalomba való belépés dátuma')
     

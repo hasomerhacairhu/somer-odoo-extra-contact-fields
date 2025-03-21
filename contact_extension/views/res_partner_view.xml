@@ -7,31 +7,51 @@
       <field name="inherit_id" ref="base.view_partner_form"/>
       <field name="arch" type="xml">
 
+        <!-- 1) Remove these fields from the base view -->
+	      <xpath expr="//field[@name='function']" position="replace"/>
+        <xpath expr="//field[@name='phone']" position="replace"/>
+        <xpath expr="//field[@name='mobile']" position="replace"/>
+        <xpath expr="//field[@name='email']" position="replace"/>
+        <xpath expr="//field[@name='website']" position="replace"/>
+        <xpath expr="//field[@name='title']" position="replace"/>
+        <!--
+          NOTE: We're *not* removing 'vat' or 'category_id' here because
+          the code below references them.
+        -->
+        
+        <!-- Insert left-column fields after VAT -->
         <xpath expr="//field[@name='vat']" position="replace">
-          <group colspan="2">
-            <group>
-              <field name="IDNumber"/>
-              <field name="SSN"/>
-              <field name="TaxID"/>
-              <field name="PassportNumber"/>
-              <field name="PassportExpirationDate"/>
-              <field name="BankAccountNumber"/>
-            </group>
-            <group>
-              <field name="Nickname"/>
-              <field name="PlaceOfBirth"/>
-              <field name="BirthDate"/>
-              <field name="NextBirthday" readonly="1"/>
-              <field name="Age" readonly="1"/>
-              <field name="MembershipLevel"/>
-              <field name="StakeholderGroup"/>
-              <field name="TShirtSize"/>
-              <field name="IsVaccinated"/>
-              <field name="MadrichTraining"/>
-              <field name="EntryDate"/>
-              <field name="ExitDate"/>
-              <field name="ExitReason" invisible="not ExitDate"/>
-            </group>
+          <group>
+            <field name="IDNumber"/>
+            <field name="SSN"/>
+            <field name="TaxID"/>
+            <field name="PassportNumber"/>
+            <field name="PassportExpirationDate"/>
+            <field name="BankAccountNumber"/>
+          </group>
+        </xpath>
+
+        <!-- Insert right-column fields after 'category_id' (Tags) -->
+        <xpath expr="//field[@name='category_id']" position="replace">
+          <group>
+            <field name="title"/>
+            <field name="function"/>
+            <field name="phone"/>
+            <field name="email"/>
+            <field name="website"/>
+            <field name="Nickname"/>
+            <field name="PlaceOfBirth"/>
+            <field name="BirthDate"/>
+            <field name="NextBirthday" readonly="1"/>
+            <field name="Age" readonly="1"/>
+            <field name="MembershipLevel"/>
+            <field name="StakeholderGroup"/>
+            <field name="TShirtSize"/>
+            <field name="IsVaccinated"/>
+            <field name="MadrichTraining"/>
+            <field name="EntryDate"/>
+            <field name="ExitDate"/>
+            <field name="ExitReason" invisible="not ExitDate"/>
           </group>
         </xpath>
 
