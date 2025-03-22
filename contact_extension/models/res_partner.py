@@ -17,7 +17,7 @@ import json
 # A harmadik link-es oszlop az szükséges? 
 # A Many2One mezőnek egy beépített funkciója az internal link.
 
-# TODO: contact extension blank space minimalizálás, 
+# +TODO: contact extension blank space minimalizálás, 
 # optimális elhelyezés, csoportosítás az rendben!
 
 # Dynamically load the membership options from our JSON file
@@ -74,16 +74,11 @@ class ResPartner(models.Model):
     string="Title"
 )
 
-    function = fields.Selection(
-    selection=[
-        ('doctor', 'Doctor'),
-        ('professor', 'Professor'),
-        ('madam', 'Madam'),
-        ('miss', 'Miss'),
-        ('mister', 'Mister'),
-    ],
-    string='Job Position'
-)
+    #NOT USED/DISPLAYED because there is some error when trying to 
+    # make it a non-selection type of field due to 
+    # overriding issues with the built-in 
+    # 'function' (Job Position field)
+    function = fields.Selection(selection=[('job', 'Job')], string='Job Position')
     
     phone = fields.Char(string='Phone')
 

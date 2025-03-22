@@ -7,19 +7,21 @@
       <field name="inherit_id" ref="base.view_partner_form"/>
       <field name="arch" type="xml">
 
-        <!-- 1) Remove these fields from the base view -->
-	      <xpath expr="//field[@name='function']" position="replace"/>
-        <xpath expr="//field[@name='phone']" position="replace"/>
-        <xpath expr="//field[@name='mobile']" position="replace"/>
-        <xpath expr="//field[@name='email']" position="replace"/>
-        <xpath expr="//field[@name='website']" position="replace"/>
-        <xpath expr="//field[@name='title']" position="replace"/>
+        <!-- Remove these fields from the base view -->
+	      <xpath expr="//group[field[@name='phone'] 
+          or field[@name='email'] or field[@name='website'] 
+          or field[@name='title'] or field[@name='function']]" 
+          position="replace">
+          <group>
+          <field name="category_id"/>
+          </group>
+        </xpath>
         <!--
           NOTE: We're *not* removing 'vat' or 'category_id' here because
           the code below references them.
         -->
         
-        <!-- Insert left-column fields after VAT -->
+        <!-- Insert left-column fields -->
         <xpath expr="//field[@name='vat']" position="replace">
           <group>
             <field name="IDNumber"/>
@@ -31,11 +33,10 @@
           </group>
         </xpath>
 
-        <!-- Insert right-column fields after 'category_id' (Tags) -->
+        <!-- Insert right-column fields -->
         <xpath expr="//field[@name='category_id']" position="replace">
           <group>
             <field name="title"/>
-            <field name="function"/>
             <field name="phone"/>
             <field name="email"/>
             <field name="website"/>
