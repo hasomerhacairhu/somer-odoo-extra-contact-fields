@@ -1,5 +1,17 @@
 # +TODO: időnként bug új felvitelnél a family relations-ben, 
 # +TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
+# TODO: Megmarad:- gyermek- szülő- testvér- grandparent- unokatestvér- unoka- other (MIND ANGOLUL)
+# TODO: Stakeholder: Multiselect Dropdown field!
+# TODO: BirthDate mező címkéje Date of Birth!
+# TODO: Alsó fülek: Sales and Purchases tűnjön el!
+# TODO: Family Relations-re átnevezni, nem Family Connections!
+# TODO: 3. oszlop a list view-ban: kommentelésre (ugyanúgy kölcsönös legyen, mint a másik 2 oszlop)
+# TODO: Hosszabb input mezők, ahol szükséges!
+# TODO: IsActive Boolean mező!
+# TODO: Phone mező formátum ellenőrző!
+# TODO: Valahol értesíteni a felhasználót, hogy minimum 16-os Odoo verzió szükséges a modulokhoz!
+# TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása!
+# TODO: Yetiforce adatmigrálás next!
 
 import json
 from odoo import api, fields, models, tools
