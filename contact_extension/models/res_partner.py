@@ -1,24 +1,9 @@
+import re
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 from datetime import date
 import os
 import json
-
-# +TODO - születésnap, stakeholder, entry, exit (csak, ha entry megvan)
-# , nickname, membership level, 
-# Egy új tabot hozz létre a többinek: SSN, TAX, Bool értékek stb... 
-# logikus csoportosítás!
-
-# +TODO - Változó nevek legyenek intuitívek!
-
-# +TODO - Családi kapcsolatok: Odoo részek újrafelhasználásával: 
-# LIST VIEW (- Meglévő táblázat vezérlőt próbáld újrahasználni - list_view): 
-# 3 oszlop: név, legördülő menü: kapcsolódás fajtái vannak vagy egyéb, harmadik pedig egy link a rokon profiljára, 
-# törlés, KÖLCSÖNÖS MEGJELENÍTÉS 
-# A harmadik link-es oszlop az szükséges? 
-# A Many2One mezőnek egy beépített funkciója az internal link.
-
-# +TODO: contact extension blank space minimalizálás, 
-# optimális elhelyezés, csoportosítás az rendben!
 
 # Dynamically load the membership options from our JSON file
 CONFIG_PATH_MEMBERSHIP = os.path.join(
@@ -49,7 +34,9 @@ with open(CONFIG_PATH_TSHIRT, 'r', encoding='utf-8') as f:
 # [("XS","XS"),("S","S"),("M","M"), ... ]
 TSHIRT_SIZE_SELECTION = [(size, size) for size in TSHIRT_SIZE_OPTIONS]
 
-
+# Example regex for Hungarian phone: +36 XX 123 4567 or 06 XX 123 4567, etc.
+# Adjust spacing/length if needed.
+HUNGARIAN_PHONE_REGEX = re.compile(r'^(?:\+36|06)\s?\d{1,2}\s?\d{3,4}\s?\d{3,4}$')
 
 # ----------------------------
 #  Model to store Stakeholder Options
@@ -75,6 +62,18 @@ class ResPartner(models.Model):
     function = fields.Selection(selection=[('job', 'Job')], string='Job Position')
     
     phone = fields.Char(string='Phone')
+    @api.constrains('phone')
+    def _check_phone_hungarian_format(self):
+        for rec in self:
+            # Skip empty phone fields
+            if not rec.phone:
+                continue
+            # If the phone doesn't match our Hungarian pattern, raise an error
+            if not HUNGARIAN_PHONE_REGEX.match(rec.phone):
+                raise ValidationError(
+                    "Invalid phone format. Please enter a valid Hungarian phone number, "
+                    "for example: +36 30 123 4567 or 06 70 123 4567."
+                )
 
     email = fields.Char(string='Email')
 
@@ -86,8 +85,6 @@ class ResPartner(models.Model):
     ExitDate = fields.Date(string='Exit Date'
         , help = 'A mozgalomból való kilépés dátuma')
     
-    # +TODO - todo note: EntryDate-nél, hogy mikor lépett be a mozgalomba!
-    # +TODO - todo note: ExitReason-nél tűnjön el a field, ha nincs ExitDate
     ExitReason = fields.Char(string='Exit Reason'
         , help = 'A mozgalomból való kilépés oka')
     @api.onchange('ExitDate')
@@ -102,10 +99,6 @@ class ResPartner(models.Model):
     
     BirthDate = fields.Date(string='Date of Birth')
     
-    # +TODO - todo note: Backend-en vagy Frontend-en számloja? 
-    # A válasz: A Backend-en számolódik, 
-    # a kódon belül mindig újraszámolódik az @api.depends-nek köszönhetően 
-    # és a Frontend-en csak szimplán megjelenik a böngészőn
     Age = fields.Integer(string='Age', compute='_computeAge', 
         store=True)
     @api.depends('BirthDate')
