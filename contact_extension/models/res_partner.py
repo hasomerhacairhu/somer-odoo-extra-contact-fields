@@ -145,6 +145,9 @@ class ResPartner(models.Model):
     
     PlaceOfBirth = fields.Char(string='Place of Birth')
     
+    IsActive = fields.Boolean(string='Is Active', 
+        help='Indicates whether the contact is an active member.')
+    
     IsVaccinated = fields.Boolean(string='Is Vaccinated',
         help="Indicates whether the contact is vaccinated.")
     

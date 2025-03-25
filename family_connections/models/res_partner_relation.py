@@ -7,7 +7,7 @@
 # +TODO: Family Relations-re átnevezni, nem Family Connections!
 # TODO: 3. oszlop a list view-ban: kommentelésre (ugyanúgy kölcsönös legyen, mint a másik 2 oszlop)
 # TODO: Hosszabb input mezők, ahol szükséges!
-# TODO: IsActive Boolean mező!
+# +TODO: IsActive Boolean mező!
 # TODO: Phone mező formátum ellenőrző!
 # TODO: Valahol értesíteni a felhasználót, hogy minimum 16-os Odoo verzió szükséges a modulokhoz!
 # TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása!

@@ -48,6 +48,7 @@
             <field name="MembershipLevel"/>
             <field name="StakeholderGroup" widget="many2many_tags"/>
             <field name="TShirtSize"/>
+            <field name="IsActive"/>
             <field name="IsVaccinated"/>
             <field name="MadrichTraining"/>
             <field name="EntryDate"/>
