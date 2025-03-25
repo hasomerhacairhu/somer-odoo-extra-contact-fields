@@ -7,7 +7,7 @@
         <field name="priority">999</field>
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook" position="inside">
-                <page name="family_connections" string="Family Connections">
+                <page name="family_connections" string="Family Relations">
                     <field name="relation_ids" mode="list,form"/>
                 </page>
             </xpath>
