@@ -1,6 +1,6 @@
 # +TODO: időnként bug új felvitelnél a family relations-ben, 
 # +TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
-# TODO: Megmarad:- gyermek- szülő- testvér- grandparent- unokatestvér- unoka- other (MIND ANGOLUL)
+# +TODO: Megmarad:- gyermek- szülő- testvér- grandparent- unokatestvér- unoka- other (MIND ANGOLUL)
 # TODO: Stakeholder: Multiselect Dropdown field!
 # TODO: BirthDate mező címkéje Date of Birth!
 # TODO: Alsó fülek: Sales and Purchases tűnjön el!

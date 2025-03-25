@@ -1,29 +1,16 @@
 {
     "parent": "child",
     "child": "parent",
-  
-    "step_parent": "step_child",
-    "step_child": "step_parent",
-  
+
     "sibling": "sibling",
     "half_sibling": "half_sibling",
     "step_sibling": "step_sibling",
   
-    "spouse": "spouse",
-    "ex_spouse": "ex_spouse",
-    "fiance": "fiance",
-  
     "grandparent": "grandchild",
     "grandchild": "grandparent",
   
-    "aunt_or_uncle": "niece_or_nephew",
-    "niece_or_nephew": "aunt_or_uncle",
-  
     "cousin": "cousin",
-  
-    "parent_in_law": "child_in_law",
-    "child_in_law": "parent_in_law",
-    "brother_in_law": "brother_in_law",
-    "sister_in_law": "sister_in_law"
+
+    "other": "other"
   }
   
