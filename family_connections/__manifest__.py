@@ -1,7 +1,8 @@
 {
     "name": "Family Connections in Contacts",
     "version": "1.0.0",
-    "summary": "Adds familial relationship management in Contacts.",
+    "summary": "Adds familial relationship management in Contacts. "
+    "Requires Odoo 16 or newer!",
     "category": "Custom",
     "author": "Adrian",
     "license": "LGPL-3",
