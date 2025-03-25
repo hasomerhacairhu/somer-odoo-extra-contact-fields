@@ -100,7 +100,7 @@ class ResPartner(models.Model):
         selection=MEMBERSHIP_SELECTION,
         string='Membership Level')
     
-    BirthDate = fields.Date(string='Birthday')
+    BirthDate = fields.Date(string='Date of Birth')
     
     # +TODO - todo note: Backend-en vagy Frontend-en számloja? 
     # A válasz: A Backend-en számolódik, 
