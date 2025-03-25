@@ -7,6 +7,7 @@
     'license': 'LGPL-3',
     'depends': ['base'],
     'data': ['views/res_partner_view.xml'],
+    'post_init_hook': 'load_stakeholder_options',
     'installable': True,
     'application': True,
     'auto_install': False

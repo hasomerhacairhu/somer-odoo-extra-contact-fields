@@ -34,21 +34,6 @@ with open(CONFIG_PATH_MEMBERSHIP, 'r', encoding='utf-8') as f:
 # Convert ["A", "B", "C"] into [(“A”, “A”), (“B”, “B”), (“C”, “C”)]
 MEMBERSHIP_SELECTION = [(val, val) for val in MEMBERSHIP_OPTIONS]
 
-
-# Dynamically load the stakeholder options from our JSON file
-CONFIG_PATH_STAKEHOLDER = os.path.join(
-    os.path.dirname(__file__),
-    '..',  # up one folder
-    'data',
-    'stakeholder_groups.json'
-)
-
-with open(CONFIG_PATH_STAKEHOLDER, 'r', encoding='utf-8') as f:
-    STAKEHOLDER_OPTIONS = json.load(f)
-
-STAKEHOLDER_SELECTION = [(val, val) for val in STAKEHOLDER_OPTIONS]
-
-
 # Load T-shirt size options from tshirt_sizes.json at import time
 CONFIG_PATH_TSHIRT = os.path.join(
     os.path.dirname(__file__),
@@ -65,6 +50,15 @@ with open(CONFIG_PATH_TSHIRT, 'r', encoding='utf-8') as f:
 TSHIRT_SIZE_SELECTION = [(size, size) for size in TSHIRT_SIZE_OPTIONS]
 
 
+
+# ----------------------------
+#  Model to store Stakeholder Options
+# ----------------------------
+class StakeholderOption(models.Model):
+    _name = 'stakeholder.option'
+    _description = 'Stakeholder Options'
+
+    name = fields.Char(string='Name', required=True, index=True)
 
 class ResPartner(models.Model):
     _inherit = 'res.partner'
@@ -124,8 +118,10 @@ class ResPartner(models.Model):
             else:
                 records.Age = 0
     
-    StakeholderGroup = fields.Selection(selection=STAKEHOLDER_SELECTION,
-        string='Stakeholder Group')
+    StakeholderGroup = fields.Many2many(
+        comodel_name='stakeholder.option',
+        string='Stakeholder Group'
+    )
     
     Nickname = fields.Char(string='Nickname')
     

@@ -46,7 +46,7 @@
             <field name="NextBirthday" readonly="1"/>
             <field name="Age" readonly="1"/>
             <field name="MembershipLevel"/>
-            <field name="StakeholderGroup"/>
+            <field name="StakeholderGroup" widget="many2many_tags"/>
             <field name="TShirtSize"/>
             <field name="IsVaccinated"/>
             <field name="MadrichTraining"/>
