@@ -11,6 +11,7 @@
                     <!-- columns from res.partner.family.relation model -->
                     <field name="related_partner_id"/>
                     <field name="relationship_type"/>
+                    <field name="comment"/>
                 </list>
             </field>
         </record>
@@ -24,6 +25,7 @@
                     <group>
                         <field name="related_partner_id"/>
                         <field name="relationship_type"/>
+                        <field name="comment"/>
                     </group>
                 </form>
             </field>
@@ -32,17 +34,10 @@
         <record id="view_partner_form_inherit_remove_sales_tab" model="ir.ui.view">
             <field name="name">res.partner.form.inherit.remove.sales.tab</field>
             <field name="model">res.partner</field>
-            <!-- Inherit the main partner form view.
-                 If you have the sales module installed, you might need:
-                 ref="sale.view_partner_form"
-                 or just ref="base.view_partner_form"
-                 depending on which introduced the tab.
-            -->
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <!-- Remove the entire <page> for "Sales & Purchases" -->
                 <xpath expr="//page[@name='sales_purchases']" position="replace">
-                    <!-- We replace it with nothing, effectively deleting it -->
                 </xpath>
             </field>
         </record>

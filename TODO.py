@@ -28,7 +28,7 @@
 # +TODO: BirthDate mező címkéje Date of Birth!
 # +TODO: Alsó fülek: Sales and Purchases tűnjön el!
 # +TODO: Family Relations-re átnevezni, nem Family Connections!
-# TODO: 3. oszlop a list view-ban: kommentelésre (ugyanúgy kölcsönös legyen, mint a másik 2 oszlop)
+# +TODO: 3. oszlop a list view-ban: kommentelésre (ugyanúgy kölcsönös legyen, mint a másik 2 oszlop)
 # +TODO: Hosszabb input mezők, ahol szükséges!
 # +TODO: IsActive Boolean mező!
 # +TODO: Phone mező formátum ellenőrző!
