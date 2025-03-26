@@ -3,8 +3,6 @@
     "child": "parent",
 
     "sibling": "sibling",
-    "half_sibling": "half_sibling",
-    "step_sibling": "step_sibling",
   
     "grandparent": "grandchild",
     "grandchild": "grandparent",
