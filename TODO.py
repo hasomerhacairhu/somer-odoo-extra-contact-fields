@@ -34,4 +34,7 @@
 # +TODO: Phone mező formátum ellenőrző!
 # +TODO: Valahol értesíteni a felhasználót, hogy minimum 16-os Odoo verzió szükséges a modulokhoz!
 # TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása!
-# TODO: Yetiforce adatmigrálás next!
+# TODO: Yetiforce adatmigrálás next! Kérdés: A Yetiforce-ban már megvan
+#  adva, hogy kinek milyen családi kapcsolatai vannak, 
+# ez már benne van a Yetiforce-ban és csak ezt kell beimportálni 
+# az Odoo-ba a Family Relations modul segítségével?
