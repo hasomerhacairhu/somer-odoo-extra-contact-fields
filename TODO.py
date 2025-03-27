@@ -23,6 +23,7 @@
 
 # +TODO: időnként bug új felvitelnél a family relations-ben, 
 # +TODO: JSON fájl-ba helyezni a kapcsolati típusokat és a reciprocal_map-et
+
 # +TODO: Megmarad:- gyermek- szülő- testvér- grandparent- unokatestvér- unoka- other (MIND ANGOLUL)
 # +TODO: Stakeholder: Multiselect Dropdown field!
 # +TODO: BirthDate mező címkéje Date of Birth!
@@ -31,10 +32,17 @@
 # +TODO: 3. oszlop a list view-ban: kommentelésre (ugyanúgy kölcsönös legyen, mint a másik 2 oszlop)
 # +TODO: Hosszabb input mezők, ahol szükséges!
 # +TODO: IsActive Boolean mező!
-# +TODO: Phone mező formátum ellenőrző!
+# TODO: Phone mező formátum ellenőrző! - REGEX: Regural Expression --> formátum szabályok kifejezése, sablon megfelelés (pl.: hosszúság, megengedett karatkerek, stb.) 
+# https://trestleiq.com/phone-validation-regex-the-what-how-and-pros-and-cons/
+
 # +TODO: Valahol értesíteni a felhasználót, hogy minimum 16-os Odoo verzió szükséges a modulokhoz!
-# TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása!
-# TODO: Yetiforce adatmigrálás next! Kérdés: A Yetiforce-ban már megvan
-#  adva, hogy kinek milyen családi kapcsolatai vannak, 
-# ez már benne van a Yetiforce-ban és csak ezt kell beimportálni 
-# az Odoo-ba a Family Relations modul segítségével?
+# TODO: vizsgálat: életkor és következő szülinap számítás, adatmanipuláció csak azon a napon történjen, 
+# amikor ténylegesen változás történik (egész szám az életkorban, új dátum a következő születésnapnál), hogy ne legyen tele a log felesleges adatokkal!
+
+# TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, a web-es interface-n belül meg nem találtam a saját Unit Test-jeimet)
+# https://www.odoo.com/documentation/18.0/developer/reference/backend/testing.html
+# TODO: Yetiforce adatmigrálás next! Kérdések: 
+# 1# Csak gyerek:szülő kapcsolatok a YetiForce-ban?
+# 2# Birthday field az miért nincsen a vtiger excel-ben?
+# 3# A CSV az pontosan mire kell? (Ezt csak azért kérdezem, mert úgy tűnik, hogy a vtiger excel-ben benne van minden, ami kell az adatmigráláshoz) válasz: CSV majd az éles adatmigráláshoz kell, most csak a vtiger excel-t demo-hoz! 
+# Komment: Legyen hiba üzenet, ha nem sikerül párt találni egy contact-hoz, és legyen loggolva (egy fájlban) minden kapcsolat felvitele. A script kimenet legyen olyan formátum, mint a script kimenet!
