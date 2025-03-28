@@ -19,6 +19,7 @@ with open(CONFIG_PATH_MEMBERSHIP, 'r', encoding='utf-8') as f:
 # Convert ["A", "B", "C"] into [(“A”, “A”), (“B”, “B”), (“C”, “C”)]
 MEMBERSHIP_SELECTION = [(val, val) for val in MEMBERSHIP_OPTIONS]
 
+
 # Load T-shirt size options from tshirt_sizes.json at import time
 CONFIG_PATH_TSHIRT = os.path.join(
     os.path.dirname(__file__),
@@ -34,9 +35,14 @@ with open(CONFIG_PATH_TSHIRT, 'r', encoding='utf-8') as f:
 # [("XS","XS"),("S","S"),("M","M"), ... ]
 TSHIRT_SIZE_SELECTION = [(size, size) for size in TSHIRT_SIZE_OPTIONS]
 
-# Example regex for Hungarian phone: +36 XX 123 4567 or 06 XX 123 4567, etc.
-# Adjust spacing/length if needed.
-HUNGARIAN_PHONE_REGEX = re.compile(r'^(?:\+36|06)\s?\d{1,2}\s?\d{3,4}\s?\d{3,4}$')
+
+# Accepts an optional '+' at the start, then any combination of digits, spaces, dashes, periods, and parentheses.
+# The pattern requires at least 7 characters and enforces a maximum of 15 digits (ignoring formatting characters)
+# to comply with the ITU-T E.164 standard for international phone numbers.
+PHONE_REGEX = re.compile(
+    r'^(?=(?:\D*\d){7,15}\D*$)\+?[0-9\-\.\s\(\)]+$'
+)
+
 
 # ----------------------------
 #  Model to store Stakeholder Options
@@ -63,17 +69,19 @@ class ResPartner(models.Model):
     
     phone = fields.Char(string='Phone')
     @api.constrains('phone')
-    def _check_phone_hungarian_format(self):
+    def _check_phone_format(self):
         for rec in self:
             # Skip empty phone fields
             if not rec.phone:
                 continue
-            # If the phone doesn't match our Hungarian pattern, raise an error
-            if not HUNGARIAN_PHONE_REGEX.match(rec.phone):
+            # If the phone doesn't match our global pattern, raise an error
+            if not PHONE_REGEX.match(rec.phone):
                 raise ValidationError(
-                    "Invalid phone format. Please enter a valid Hungarian phone number, "
-                    "for example: +36 30 123 4567 or 06 70 123 4567."
-                )
+                    "Invalid phone format. Please enter a valid phone number: Only digits, spaces, dashes, periods, "
+                    "parentheses, and an optional leading '+' are allowed. "
+                    "The length of the phone number has to be between 7-15 digits long, "
+                    "not including other characters and spaces"
+            )
 
     email = fields.Char(string='Email')
 

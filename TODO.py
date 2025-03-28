@@ -32,7 +32,7 @@
 # +TODO: 3. oszlop a list view-ban: kommentelésre (ugyanúgy kölcsönös legyen, mint a másik 2 oszlop)
 # +TODO: Hosszabb input mezők, ahol szükséges!
 # +TODO: IsActive Boolean mező!
-# TODO: Phone mező formátum ellenőrző! - REGEX: Regural Expression --> formátum szabályok kifejezése, sablon megfelelés (pl.: hosszúság, megengedett karatkerek, stb.) 
+# +TODO: Phone mező formátum ellenőrző! - REGEX: Regural Expression --> formátum szabályok kifejezése, sablon megfelelés (pl.: hosszúság, megengedett karatkerek, stb.) 
 # https://trestleiq.com/phone-validation-regex-the-what-how-and-pros-and-cons/
 
 # +TODO: Valahol értesíteni a felhasználót, hogy minimum 16-os Odoo verzió szükséges a modulokhoz!

@@ -78,6 +78,9 @@
         <xpath expr="//field[@name='website']" position="attributes">
             <attribute name="style">width: 400px;</attribute>
         </xpath>
+        <xpath expr="//field[@name='phone']" position="attributes">
+            <attribute name="style">width: 400px;</attribute>
+        </xpath>
 
       </field>
     </record>
