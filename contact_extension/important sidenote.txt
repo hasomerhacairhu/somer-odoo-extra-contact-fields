@@ -1,0 +1,22 @@
+CALCULATION LOGIC OF "Age" AND "NextBirthday" FOR IMPROVED SPEED AND LESS LOG CLOG
+
+The scheduled method (decorated with @api.model) is designed to update the stored values of Age and NextBirthday once per day rather than on every form view load. 
+However, note the following:
+
+Stored Computed Fields:
+Because Age and NextBirthday are stored and their compute decorators only list 'BirthDate' as a dependency, they aren’t automatically recomputed when the calendar day changes. 
+This prevents unnecessary recalculations on every view load.
+
+Scheduled Update:
+The update_age_and_next_birthday method is meant to be run as a daily cron job. When it runs, it recalculates these fields for all contacts with a BirthDate. 
+This means that if the calculated values haven’t actually changed (for example, if it isn’t yet a birthday), then even though the method computes them every day, 
+the stored values remain the same (and in many cases, Odoo’s write will only trigger an update if the new value is different).
+
+What It Doesn’t Do Out-of-the-Box:
+The provided scheduled method doesn’t include a check to update a record only if the value changes; it calculates and writes the new value for every record with a BirthDate. 
+You could add such a check to further minimize writes if needed, but in its current form, it avoids the daily recomputation triggered by using fields.Date.today() directly 
+in the @api.depends decorator.
+
+In summary, by relying on a scheduled job to update these stored computed fields rather than making them depend on the current date, 
+you prevent Odoo from recalculating them every time the contact form is loaded. They only update when the cron job runs (or when BirthDate changes), 
+so you’re reducing the overall number of recomputations and related logs.

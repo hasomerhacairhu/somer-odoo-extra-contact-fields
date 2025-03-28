@@ -107,17 +107,56 @@ class ResPartner(models.Model):
     
     BirthDate = fields.Date(string='Date of Birth')
     
-    Age = fields.Integer(string='Age', compute='_computeAge', 
+    Age = fields.Integer(string='Age', compute='_compute_age', 
         store=True)
     @api.depends('BirthDate')
-    def _computeAge(self):
-        today = fields.Date.today()
-        for records in self:
-            if records.BirthDate:
-                days_diff = (today - records.BirthDate).days
-                records.Age = days_diff // 365
+    def _compute_age(self):
+        for rec in self:
+            if rec.BirthDate:
+                today = fields.Date.today()  # Used only for calculation, not as a dependency
+                # Calculate the difference in years in a simple way
+                rec.Age = today.year - rec.BirthDate.year - (
+                    (today.month, today.day) < (rec.BirthDate.month, rec.BirthDate.day)
+                )
             else:
-                records.Age = 0
+                rec.Age = 0
+
+    NextBirthday = fields.Date(string='Next Birthday',
+        compute='_compute_next_birthday',
+        help="Shows the next upcoming birthday, based on the Birthday field.")
+    @api.depends('BirthDate')
+    def _compute_next_birthday(self):
+        for rec in self:
+            if not rec.BirthDate:
+                rec.NextBirthday = False
+            else:
+                today = fields.Date.today()  # Used only for calculation
+                bday_month = rec.BirthDate.month
+                bday_day = rec.BirthDate.day
+                current_year_bday = date(today.year, bday_month, bday_day)
+                if current_year_bday <= today:
+                    rec.NextBirthday = date(today.year + 1, bday_month, bday_day)
+                else:
+                    rec.NextBirthday = current_year_bday
+
+    @api.model
+    def update_age_and_next_birthday(self):
+        """Scheduled method to update Age and NextBirthday for all records.
+        This should be set up as a daily cron job."""
+        today = fields.Date.today()
+        partners = self.search([('BirthDate', '!=', False)])
+        for partner in partners:
+            # Calculate age
+            new_age = today.year - partner.BirthDate.year - (
+                (today.month, today.day) < (partner.BirthDate.month, partner.BirthDate.day)
+            )
+            # Calculate next birthday
+            bday_month = partner.BirthDate.month
+            bday_day = partner.BirthDate.day
+            current_year_bday = date(today.year, bday_month, bday_day)
+            new_next_bday = date(today.year + 1, bday_month, bday_day) if current_year_bday <= today else current_year_bday
+
+            partner.write({'Age': new_age, 'NextBirthday': new_next_bday})
     
     StakeholderGroup = fields.Many2many(
         comodel_name='stakeholder.option',
@@ -155,25 +194,3 @@ class ResPartner(models.Model):
     MadrichTraining = fields.Boolean(string='Madrich Training',
         help="Indicates whether the contact had Madrich training.")
     
-    NextBirthday = fields.Date(string='Next Birthday',
-        compute='_compute_next_birthday',
-        help="Shows the next upcoming birthday, based on the Birthday field.")
-    @api.depends('BirthDate')
-    def _compute_next_birthday(self):
-        for partner in self:
-            if not partner.BirthDate:
-                partner.NextBirthday = False
-            else:
-                today = fields.Date.today()
-                # Convert to datetime.date for month/day comparison
-                bday_month = partner.BirthDate.month
-                bday_day = partner.BirthDate.day
-
-                current_year_bday = date(today.year, bday_month, bday_day)
-                if current_year_bday < today:
-                    # If birthday already happened this year, use next year
-                    partner.NextBirthday = date(today.year + 1, bday_month, bday_day)
-                else:
-                    # Otherwise, use current year
-                    partner.NextBirthday = current_year_bday
-
