@@ -36,13 +36,13 @@
 # https://trestleiq.com/phone-validation-regex-the-what-how-and-pros-and-cons/
 
 # +TODO: Valahol értesíteni a felhasználót, hogy minimum 16-os Odoo verzió szükséges a modulokhoz!
-# TODO: vizsgálat: életkor és következő szülinap számítás, adatmanipuláció csak azon a napon történjen, 
+# +TODO: vizsgálat: életkor és következő szülinap számítás, adatmanipuláció csak azon a napon történjen, 
 # amikor ténylegesen változás történik (egész szám az életkorban, új dátum a következő születésnapnál), hogy ne legyen tele a log felesleges adatokkal!
 
 # TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, a web-es interface-n belül meg nem találtam a saját Unit Test-jeimet)
 # https://www.odoo.com/documentation/18.0/developer/reference/backend/testing.html
 # TODO: Yetiforce adatmigrálás next! Kérdések: 
-# 1# Csak gyerek:szülő kapcsolatok a YetiForce-ban?
-# 2# Birthday field az miért nincsen a vtiger excel-ben?
-# 3# A CSV az pontosan mire kell? (Ezt csak azért kérdezem, mert úgy tűnik, hogy a vtiger excel-ben benne van minden, ami kell az adatmigráláshoz) válasz: CSV majd az éles adatmigráláshoz kell, most csak a vtiger excel-t demo-hoz! 
-# Komment: Legyen hiba üzenet, ha nem sikerül párt találni egy contact-hoz, és legyen loggolva (egy fájlban) minden kapcsolat felvitele. A script kimenet legyen olyan formátum, mint a script kimenet!
+# 1# Csak gyerek:szülő kapcsolatok a YetiForce-ban? válasz: igen
+# 2# Birthday field az miért nincsen a vtiger excel-ben? válasz: van, csak nem abban az excel-ben, amit eredetileg kaptam
+# 3# A CSV az pontosan mire kell? (Ezt csak azért kérdezem, mert úgy tűnik, hogy a vtiger excel-ben benne van minden, ami kell az adatmigráláshoz) válasz: CSV majd az éles adatmigráláshoz kell, most csak a vtiger excel demo-hoz! 
+# Komment: Legyen hiba üzenet, ha nem sikerül párt találni egy contact-hoz, és legyen loggolva (egy fájlban) minden kapcsolat felvitele. A script kimenet legyen olyan formátum, mint a script bemenet!
