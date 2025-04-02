@@ -1,84 +1,99 @@
-import os
+import base64
 import csv
+import io
 from datetime import datetime
 from odoo import api, models, fields, _
 from odoo.exceptions import UserError
 
-class ContactMigration(models.TransientModel):
-    _name = 'contact.migration'
-    _description = 'Migrate contacts from vtiger CSV file'
-
-    def migrate_contacts(self):
-        """
-        Migrate contacts using a CSV file converted from the vtiger ODS file.
-        Log messages are written directly to a file in the module's data folder.
-        """
-        # Get the module root directory (one level above the "models" folder)
-        module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        
-        # Define log file path with .txt extension in the module's data folder.
-        log_path = os.path.join(module_path, 'data', 'migration_log.txt')
-        
-        def write_log(message):
-            with open(log_path, 'a', encoding='utf-8') as f:
-                f.write(f"{datetime.now():%Y-%m-%d %H:%M:%S} {message}\n")
-        
-        write_log("Starting migration")
-        
-        # Define CSV file path (assumes you converted your ODS to CSV).
-        vtiger_csv_path = os.path.join(module_path, 'data', 'vtiger_contactdetails.csv')
-        
+def normalize_date(date_str):
+    if not date_str:
+        return ''
+    # Try to parse with both accepted formats
+    for fmt in ("%Y-%m-%d", "%Y.%m.%d"):
         try:
-            with open(vtiger_csv_path, mode='r', encoding='utf-8') as csvfile:
-                reader = csv.DictReader(csvfile)
-                rows = list(reader)
-            write_log(f"Loaded vtiger CSV file from {vtiger_csv_path} with {len(rows)} rows")
-        except Exception as e:
-            write_log(f"ERROR reading CSV file: {e}")
-            raise UserError(_("Error reading CSV file: %s") % e)
-        
-        # Define mapping between CSV columns and Odoo res.partner fields.
-        field_mapping = {
-            'email': 'email',
-            'phone': 'phone',
-            'stakeholder': 'StakeholderGroup',
-            'birthday': 'BirthDate',
-            'id_number': 'IDNumber',
-            'soc_sec_nbr': 'SSN',
-            'size': 'TShirtSize',
-            'birthplace': 'PlaceOfBirth',
-            'tax_id_nbr': 'TaxID',
-            'passport_nbr': 'PassportNumber',
-            'passport_exp_date': 'PassportExpirationDate',
-            'bank_account_nbr': 'BankAccountNumber',
-            'madrich_training': 'MadrichTraining',
-            'vaccinated': 'IsVaccinated',
-            'active': 'IsActive'
-            # Add additional mappings as needed.
-        }
-        
-        for idx, row in enumerate(rows):
-            vtiger_id = row.get('contactid')
-            if not vtiger_id:
-                write_log(f"WARNING: Row {idx} is missing contactid; skipping.")
-                continue
+            dt = datetime.strptime(date_str, fmt)
+            return dt.strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+    # Return the original string if no format matches (or raise an error if preferred)
+    return date_str
 
-            partner_data = {}
-            # Combine 'firstname' and 'lastname' into full name.
+class ContactImportWizard(models.TransientModel):
+    _name = 'contact.import.wizard'
+    _description = 'Import Contacts from CSV'
+
+    csv_file = fields.Binary(string="CSV File", required=True, help="Upload your CSV file here")
+
+    def _parse_stakeholder_groups(self, stakeholder_str):
+        """
+        Splits the stakeholder_str by '|##|' and returns a list of record IDs
+        that match (or are created for) each stakeholder name.
+        """
+        if not stakeholder_str:
+            return []
+        stakeholder_list = [s.strip() for s in stakeholder_str.split('|##|') if s.strip()]
+
+        # If StakeholderGroup references res.partner.category, adjust below accordingly:
+        Category = self.env['stakeholder.option']
+        cat_ids = []
+        for name in stakeholder_list:
+            # Search for an existing category with this name
+            category = Category.search([('name', '=', name)], limit=1)
+            # Create it if not found
+            if not category:
+                category = Category.create({'name': name})
+            cat_ids.append(category.id)
+        return cat_ids
+    
+    def import_contacts(self):
+        if not self.csv_file:
+            raise UserError(_("Please select a CSV file."))
+        # Decode the uploaded file
+        file_data = base64.b64decode(self.csv_file)
+        # Use io.StringIO to treat it as a text stream
+        file_stream = io.StringIO(file_data.decode("utf-8"))
+        reader = csv.DictReader(file_stream)
+
+        for row in reader:
+            # Combine first and last names to form the full name for Odoo
             first_name = row.get('firstname', '')
             last_name = row.get('lastname', '')
             full_name = f"{first_name} {last_name}".strip()
-            partner_data['name'] = full_name
 
-            for src_field, odoo_field in field_mapping.items():
-                if src_field in row:
-                    partner_data[odoo_field] = row[src_field]
+            # Normalize the date fields to ensure correct format
+            birthday = normalize_date(row.get('birthday', ''))
+            passport_exp_date = normalize_date(row.get('passport_exp_date', ''))
             
-            try:
-                partner = self.env['res.partner'].create(partner_data)
-                write_log(f"Created partner: {partner.name}")
-            except Exception as e:
-                write_log(f"ERROR creating partner for row {idx}: {e}")
-        
-        write_log("Migration completed")
-        return True
+            # Parse the stakeholder field and get the list of option IDs
+            stakeholder_str = row.get('stakeholder', '')
+            cat_ids = self._parse_stakeholder_groups(stakeholder_str)
+           
+            # Convert "1" -> True, "0" -> False for boolean fields
+            madrich_training = (row.get('madrich_training', '') == '1')
+            is_vaccinated = (row.get('vaccinated', '') == '1')
+            is_active = (row.get('active', '') == '1')
+            
+            # Map your CSV columns to Odoo fields
+            partner_vals = {
+                'name': full_name,
+                'email': row.get('email', ''),
+                'phone': row.get('phone', ''),
+                # Assign the many2many relationship with the list of IDs
+                'StakeholderGroup': [(6, 0, cat_ids)],
+                'BirthDate': birthday,
+                'IDNumber': row.get('id_number', ''),
+                'SSN': row.get('soc_sec_nbr', ''),
+                'TShirtSize': row.get('size', ''),
+                'PlaceOfBirth': row.get('birthplace', ''),
+                'TaxID': row.get('tax_id_nbr', ''),
+                'PassportNumber': row.get('passport_nbr', ''),
+                'PassportExpirationDate': passport_exp_date,
+                'BankAccountNumber': row.get('bank_account_nbr', ''),
+                'MadrichTraining': madrich_training,
+                'IsVaccinated': is_vaccinated,
+                'IsActive': is_active
+            }
+            # Create the contact
+            self.env['res.partner'].create(partner_vals)
+
+        return {"type": "ir.actions.act_window_close"}
