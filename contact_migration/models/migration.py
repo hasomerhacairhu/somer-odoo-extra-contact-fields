@@ -31,7 +31,7 @@ class ContactImportWizard(models.TransientModel):
         """
         if not stakeholder_str:
             return []
-        stakeholder_list = [s.strip() for s in stakeholder_str.split('|##|') if s.strip()]
+        stakeholder_list = [s.strip() for s in stakeholder_str.split(' |##| ') if s.strip()]
 
         # If StakeholderGroup references res.partner.category, adjust below accordingly:
         Category = self.env['stakeholder.option']

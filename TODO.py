@@ -41,8 +41,14 @@
 
 # TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, a web-es interface-n belül meg nem találtam a saját Unit Test-jeimet)
 # https://www.odoo.com/documentation/18.0/developer/reference/backend/testing.html
+
 # TODO: Yetiforce adatmigrálás next! Kérdések: 
 # 1# Csak gyerek:szülő kapcsolatok a YetiForce-ban? válasz: igen
 # 2# Birthday field az miért nincsen a vtiger excel-ben? válasz: van, csak nem abban az excel-ben, amit eredetileg kaptam
 # 3# A CSV az pontosan mire kell? (Ezt csak azért kérdezem, mert úgy tűnik, hogy a vtiger excel-ben benne van minden, ami kell az adatmigráláshoz) válasz: CSV majd az éles adatmigráláshoz kell, most csak a vtiger excel demo-hoz! 
-# Komment: Legyen hiba üzenet, ha nem sikerül párt találni egy contact-hoz, és legyen loggolva (egy fájlban) minden kapcsolat felvitele. A script kimenet legyen olyan formátum, mint a script bemenet!
+# TODO Komment: Legyen hiba üzenet, ha nem sikerül párt találni egy contact-hoz, és legyen loggolva (egy fájlban) minden kapcsolat felvitele.
+# A script kimenet legyen olyan formátum, mint a script bemenet!
+# TODO Ha nincs nickname, akkor legyen a firstname a nickname!
+# TODO Szkript: különálló, futtatandó kód, az Odoo API-n (JSON formátumú adat megy benne) keresztül hajtsa végre a szkript-et (nem gomb, vagy akármilyen felületen megjelenő dolog). - kell majd a jövőbeli feladatokhoz is, és biztonságosabb, gyorsabb kezelni az error-okat vele
+# A segítség az API-hoz: https://www.odoo.com/documentation/18.0/developer/reference/external_api.html
+# TODO DB-s modul az adatbázis visszaállításához, hogy ne keljen törölni manuálisan tesztek után!
