@@ -60,7 +60,24 @@ def get_stakeholder_option_ids(stakeholder_str):
         option_ids.append(option_id)
     return option_ids
 
-def import_contacts(csv_file_path):
+def create_family_relation(parent_id, child_id, relationship_type="parent"):
+    """Create a family relationship between parent and child."""
+    try:
+        # Create a family relationship for the given parent-child pair
+        models.execute_kw(db, uid, password,
+                          'res.partner.family.relation', 'create', [{
+                              'partner_id': parent_id,
+                              'related_partner_id': child_id,
+                              'relationship_type': relationship_type,
+                          }])
+        print(f"Created family relation between Parent ID {parent_id} and Child ID {child_id}")
+    except Exception as e:
+        print(f"Failed to create relationship between Parent ID {parent_id} and Child ID {child_id} due to: {e}")
+
+def import_contacts(csv_file_path, relation_file_path):
+    
+    # Step 1: Import Contacts
+    partner_ids_map = {}  # Dictionary to store contactid -> partner_id mapping
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -107,17 +124,37 @@ def import_contacts(csv_file_path):
                 'IsVaccinated': is_vaccinated,
                 'IsActive': is_active,
             }
+
+            contact_id = row.get('contactid', '')
+
             try:
                 # Create the partner record in Odoo
                 partner_id = models.execute_kw(db, uid, password,
-                                               'res.partner', 'create', [partner_vals])
-                print(f"Created partner with ID {partner_id}")
+                    'res.partner', 'create', [partner_vals])
+                partner_ids_map[contact_id] = partner_id
+                print(f"Created partner '{full_name}' with ID {partner_id}")
             except Exception as e:
                 print(f"Failed to create partner '{full_name}' due to error: {e}")
+    
+    # Step 2: Create Parent-Child Relationships
+    with open(relation_file_path, mode='r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # Split by the comma to extract parent and child IDs
+            relation_data = row.get('crmid,"relcrmid"', '').split(',')
+            parent_id = relation_data[0]
+            child_id = relation_data[1].strip('"')
+            if parent_id in partner_ids_map and child_id in partner_ids_map:
+                parent = partner_ids_map[parent_id]
+                child = partner_ids_map[child_id]
+                create_family_relation(parent, child)
+            else:
+                print(f"Relationship error: One or both contacts not found for Parent ID {parent_id} and Child ID {child_id}")
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: {} <csv_file_path>".format(sys.argv[0]))
+    if len(sys.argv) != 3:
+        print("Usage: {} <contacts_csv_file_path> <relations_csv_file_path>".format(sys.argv[0]))
         sys.exit(1)
     csv_file_path = sys.argv[1]
-    import_contacts(csv_file_path)
+    relation_file_path = sys.argv[2]
+    import_contacts(csv_file_path, relation_file_path)

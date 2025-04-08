@@ -54,8 +54,8 @@
 # (nem gomb, vagy akármilyen felületen megjelenő dolog). - 
 # kell majd a jövőbeli feladatokhoz is, és biztonságosabb, 
 # gyorsabb kezelni az error-okat vele
-#TODO: Family Relations része a szkript-nek
-#TODO: Hiba üzenet kiíása a family relations error-okhoz is
+#+TODO: Family Relations része a szkript-nek
+#+TODO: Hiba üzenet kiíása a family relations error-okhoz is
 
 # A segítség az API-hoz: https://www.odoo.com/documentation/18.0/developer/reference/external_api.html
 #TODO DB-s modul az adatbázis visszaállításához, hogy ne keljen törölni manuálisan tesztek után!

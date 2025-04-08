@@ -1,8 +1,8 @@
 import json
 from odoo import api, fields, models, tools
 
-REL_TYPES_PATH = 'family_connections/data/relationship_types.json'
-RECIP_MAP_PATH = 'family_connections/data/reciprocal_map.json'
+REL_TYPES_PATH = 'family_relations/data/relationship_types.json'
+RECIP_MAP_PATH = 'family_relations/data/reciprocal_map.json'
 
 def load_json_file(path):
     """Utility to load a JSON file from the module."""
