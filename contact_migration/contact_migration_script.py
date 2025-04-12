@@ -60,7 +60,7 @@ def get_stakeholder_option_ids(stakeholder_str):
         option_ids.append(option_id)
     return option_ids
 
-def create_family_relation(parent_id, child_id, relationship_type="parent"):
+def create_family_relation(parent_id, child_id, relationship_type="child"):
     """Create a family relationship between parent and child."""
     try:
         # Create a family relationship for the given parent-child pair
@@ -72,13 +72,18 @@ def create_family_relation(parent_id, child_id, relationship_type="parent"):
                           }])
         print(f"Created family relation between Parent ID {parent_id} and Child ID {child_id}")
     except Exception as e:
-        print(f"Failed to create relationship between Parent ID {parent_id} and Child ID {child_id} due to: {e}")
+        print(f"Failed to create relationship between ID {parent_id} and ID {child_id} due to: {e}")
+        # If creating the family relation fails, delete the partners created in Step 1
+        models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[parent_id]])
+        models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[child_id]])
+        print(f"Deleted partners with ID ", parent_id, " and ID ", child_id)
 
 def import_contacts(csv_file_path, relation_file_path):
     
     # Step 1: Import Contacts
     partner_ids_map = {}  # Dictionary to store contactid -> partner_id mapping
     duplicates = {} # Dictionary to check whether a contact was tried to be created before and if so skip the family relation setup process as well
+    is_szulo_map = {}     # Maps contactid -> Boolean (True if 'Szulo' in stakeholder, else False)
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -99,6 +104,10 @@ def import_contacts(csv_file_path, relation_file_path):
             # Process stakeholder field into a list of stakeholder.option IDs
             stakeholder_str = row.get('stakeholder', '')
             option_ids = get_stakeholder_option_ids(stakeholder_str)
+
+            # Check if this contact's stakeholder field contains "Szulo"
+            # We'll use this later in Step 2 to decide who is actually the parent
+            is_szulo_map[row.get('contactid', '')] = ('Szulo' in stakeholder_str)
 
             # Convert "1" to True and "0" to False for boolean fields
             madrich_training = (row.get('madrich_training', '') == '1')
@@ -161,21 +170,29 @@ def import_contacts(csv_file_path, relation_file_path):
         for row in reader:
             # Split by the comma to extract parent and child IDs
             relation_data = row.get('crmid,"relcrmid"', '').split(',')
-            parent_id = relation_data[0]
-            child_id = relation_data[1].strip('"')
+            partner_id_one = relation_data[0]
+            partner_id_two = relation_data[1].strip('"')
             # Check if both parent and child contacts exist in partner_ids_map
-            if parent_id in partner_ids_map and child_id in partner_ids_map and (duplicates[parent_id] != 'duplicate' or duplicates[child_id] != 'duplicate'):
-                parent = partner_ids_map[parent_id]
-                child = partner_ids_map[child_id]
+            if partner_id_one in partner_ids_map and partner_id_two in partner_ids_map and (duplicates[partner_id_one] != 'duplicate' or duplicates[partner_id_two] != 'duplicate'):
+                parent = 0
+                child = 0
+                if is_szulo_map[partner_id_one] == True:
+                    parent = partner_ids_map[partner_id_one]
+                    child = partner_ids_map[partner_id_two]
+                elif is_szulo_map[partner_id_two] == True:
+                    child = partner_ids_map[partner_id_one]
+                    parent = partner_ids_map[partner_id_two]
+
                 try:
                     create_family_relation(parent, child)
                 except Exception as e:
-                    print(f"Failed to create relationship between Parent ID {partner_ids_map[parent_id]} and Child ID {partner_ids_map[child_id]}.")
-                    # If creating the family relation fails, delete the partner created in Step 1
-                    models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[parent]])
-                    print(f"Deleted partner with ID {parent}")
+                    print(f"Failed to create relationship between ID ", partner_ids_map[partner_id_one], " and ID " , partner_ids_map[partner_id_two])
+                    # If creating the family relation fails, delete the partners created in Step 1
+                    models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[partner_ids_map[partner_id_one]]])
+                    models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[partner_ids_map[partner_id_two]]])
+                    print(f"Deleted partners with ID ", partner_ids_map[partner_id_one], " and ID ", partner_ids_map[partner_id_two])
             else:
-                print(f"Relationship error: One or both contacts not found for Parent ID {partner_ids_map[parent_id]} and Child ID {partner_ids_map[child_id]} or partner(s) already exist(s)")
+                print(f"Relationship error: One or both contacts not found for ID ", partner_ids_map[partner_id_one], " and ID ", partner_ids_map[partner_id_two], " or partner(s) already exist(s)")
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:

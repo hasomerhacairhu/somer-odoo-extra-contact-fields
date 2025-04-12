@@ -82,7 +82,7 @@
 # Majd Marci-val együtt használjuk!!
 
 #+TODO: név és e-mail együttes alapján legyen az existing partner!
-#TODO: Stakeholder alapján dől el, hogy ki a szülő!
+#+TODO: Stakeholder alapján dől el, hogy ki a szülő!
 #TODO: A try and except legyen külön tömben a sikeres és sikertelen alapján (2 külön tömb), majd a végén ezek legyenek benne egy log fileban --> https://docs.python.org/3/howto/logging.html#logging-to-a-file
 #TODO: kapcsoló --> script preflight (Olyan funkció, hogy végigmegy, de nincs adatmódosítás. Lépéseket lehet elvégezni, de nem történik adatbázisba rögzítés. Kapcsolatok létrehozásánál lesz jó. Nem kell módosítani az adatbázist, látni lehet előre a problémákat.)
 #TODO: Belépési pont megjelölése --> rollback, visszagörgetés egy checkpoint-hoz --> két utasítás közötti történéseket vissza lehet csinálni. Benne van az Odoo-ban? - utánanézni (segítség: database transaction rollback commit)
