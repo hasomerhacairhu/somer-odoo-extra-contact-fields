@@ -65,7 +65,7 @@
 #+TODO: Hiba üzenet kiíása a family relations error-okhoz is
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # A segítség az API-hoz: https://www.odoo.com/documentation/18.0/developer/reference/external_api.html
-#TODO: A u_yf_contacts_contacts-nál minden sorban az első 
+#+TODO: A u_yf_contacts_contacts-nál minden sorban az első 
 # vagy a második szám azonosítja a szülőket? 
 # Azért fontos, mert a family relations úgy működik, hogy vagy 
 # csak a parent vagy csak a child címkét kell átadni a kódnak, 
@@ -76,7 +76,13 @@
 # a rekordhoz van megadva a szülő címke a stakeholdereknél, 
 # de vannak olyan sorok is, ahol a második szám ismétlődik 
 # (pl. a 2731) 4 soron keresztül és ahhoz kötődik 4 különböző első szám,
-#  mint a gyerek.
+#  amelyek a gyerekek.
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #+TODO: DB-s modul az adatbázis visszaállításához, hogy ne keljen törölni manuálisan tesztek után! 
 # Majd Marci-val együtt használjuk!!
+
+#+TODO: név és e-mail együttes alapján legyen az existing partner!
+#TODO: Stakeholder alapján dől el, hogy ki a szülő!
+#TODO: A try and except legyen külön tömben a sikeres és sikertelen alapján (2 külön tömb), majd a végén ezek legyenek benne egy log fileban --> https://docs.python.org/3/howto/logging.html#logging-to-a-file
+#TODO: kapcsoló --> script preflight (Olyan funkció, hogy végigmegy, de nincs adatmódosítás. Lépéseket lehet elvégezni, de nem történik adatbázisba rögzítés. Kapcsolatok létrehozásánál lesz jó. Nem kell módosítani az adatbázist, látni lehet előre a problémákat.)
+#TODO: Belépési pont megjelölése --> rollback, visszagörgetés egy checkpoint-hoz --> két utasítás közötti történéseket vissza lehet csinálni. Benne van az Odoo-ban? - utánanézni (segítség: database transaction rollback commit)

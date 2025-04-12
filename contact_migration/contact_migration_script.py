@@ -38,7 +38,7 @@ def normalize_date(date_str):
 
 def get_stakeholder_option_ids(stakeholder_str):
     """
-    Splits the stakeholder_str by '|##|' and returns a list of record IDs
+    Splits the stakeholder_str by ' |##| ' and returns a list of record IDs
     for the 'stakeholder.option' model. Searches for an existing record
     by name, and creates it if not found.
     """
@@ -78,7 +78,7 @@ def import_contacts(csv_file_path, relation_file_path):
     
     # Step 1: Import Contacts
     partner_ids_map = {}  # Dictionary to store contactid -> partner_id mapping
-    duplicates = {} # Dictionary to check whether a contact was tried to be created before and if so skip the family relation as well
+    duplicates = {} # Dictionary to check whether a contact was tried to be created before and if so skip the family relation setup process as well
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -127,11 +127,16 @@ def import_contacts(csv_file_path, relation_file_path):
             }
 
             contact_id = row.get('contactid', '')
+            email = row.get('email', '').strip()
+            if email:
+                domain = [('name', '=', full_name), ('email', '=', email)]
+            else:
+                domain = [('name', '=', full_name)]
 
              # Check if the contact already exists before creating it using full name
             existing_partner = models.execute_kw(db, uid, password,
                     'res.partner', 'search',
-                    [[['name', '=', full_name]]], {'limit': 1})
+                    [domain], {'limit': 1})
 
             if not existing_partner:
                 try:
