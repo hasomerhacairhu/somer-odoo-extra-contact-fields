@@ -3,7 +3,28 @@ import csv
 import base64
 import io
 import sys
+import logging
 from datetime import datetime
+
+# Configure logging
+logger = logging.getLogger('migration_script')
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+# Console handler
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(formatter)
+logger.addHandler(console_handler)
+
+# File handler (logs will be written to 'migration.log')
+file_handler = logging.FileHandler('migration.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
+# Define two arrays: one to capture messages from successful try blocks and
+# the other for messages from except blocks.
+try_logs = []
+except_logs = []
 
 # --------------------------
 # Destination Configuration
@@ -17,7 +38,9 @@ password = 'MarciAdrianDev'
 common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(url))
 uid = common.authenticate(db, username, password, {})
 if not uid:
-    print("Authentication failed!")
+    msg = "Authentication failed!"
+    logger.error(msg)
+    except_logs.append(msg)
     sys.exit(1)
 models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url))
 
@@ -70,20 +93,26 @@ def create_family_relation(parent_id, child_id, relationship_type="child"):
                               'related_partner_id': child_id,
                               'relationship_type': relationship_type,
                           }])
-        print(f"Created family relation between Parent ID {parent_id} and Child ID {child_id}")
+        msg = f"Created family relation between Parent ID {parent_id} and Child ID {child_id}"
+        logger.info(msg)
+        try_logs.append(msg)
     except Exception as e:
-        print(f"Failed to create relationship between ID {parent_id} and ID {child_id} due to: {e}")
+        msg = f"Failed to create relationship between ID {parent_id} and ID {child_id} due to: {e}"
+        logger.error(msg)
+        except_logs.append(msg)
         # If creating the family relation fails, delete the partners created in Step 1
         models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[parent_id]])
         models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[child_id]])
-        print(f"Deleted partners with ID ", parent_id, " and ID ", child_id)
+        deletion_msg = f"Deleted partners with ID {parent_id} and ID {child_id}"
+        logger.error(deletion_msg)
+        except_logs.append(deletion_msg)
 
 def import_contacts(csv_file_path, relation_file_path):
-    
     # Step 1: Import Contacts
     partner_ids_map = {}  # Dictionary to store contactid -> partner_id mapping
-    duplicates = {} # Dictionary to check whether a contact was tried to be created before and if so skip the family relation setup process as well
+    duplicates = {}       # Dictionary to check whether a contact was tried to be created before.
     is_szulo_map = {}     # Maps contactid -> Boolean (True if 'Szulo' in stakeholder, else False)
+    
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -106,7 +135,6 @@ def import_contacts(csv_file_path, relation_file_path):
             option_ids = get_stakeholder_option_ids(stakeholder_str)
 
             # Check if this contact's stakeholder field contains "Szulo"
-            # We'll use this later in Step 2 to decide who is actually the parent
             is_szulo_map[row.get('contactid', '')] = ('Szulo' in stakeholder_str)
 
             # Convert "1" to True and "0" to False for boolean fields
@@ -142,7 +170,7 @@ def import_contacts(csv_file_path, relation_file_path):
             else:
                 domain = [('name', '=', full_name)]
 
-             # Check if the contact already exists before creating it using full name
+            # Check if the contact already exists before creating it using full name and/or email
             existing_partner = models.execute_kw(db, uid, password,
                     'res.partner', 'search',
                     [domain], {'limit': 1})
@@ -154,15 +182,20 @@ def import_contacts(csv_file_path, relation_file_path):
                         'res.partner', 'create', [partner_vals])
                     partner_ids_map[contact_id] = partner_id  # Store the partner ID for this contact
                     duplicates[contact_id] = 'non-duplicate'
-                    print(f"Created partner '{full_name}' with ID {partner_id}")
+                    msg = f"Created partner '{full_name}' with ID {partner_id}"
+                    logger.info(msg)
+                    try_logs.append(msg)
                 except Exception as e:
-                    print(f"Failed to create partner '{full_name}' due to error: {e}")
+                    msg = f"Failed to create partner '{full_name}' due to error: {e}"
+                    logger.error(msg)
+                    except_logs.append(msg)
             else:
                 # If the partner already exists, use the existing ID
                 partner_ids_map[contact_id] = existing_partner[0]
                 duplicates[contact_id] = 'duplicate'
-                print(f"Partner '{full_name}' already exists with ID {existing_partner[0]}")
-            
+                msg = f"Partner '{full_name}' already exists with ID {existing_partner[0]}"
+                logger.error(msg)
+                except_logs.append(msg)
     
     # Step 2: Create Parent-Child Relationships
     with open(relation_file_path, mode='r', encoding='utf-8') as f:
@@ -173,7 +206,8 @@ def import_contacts(csv_file_path, relation_file_path):
             partner_id_one = relation_data[0]
             partner_id_two = relation_data[1].strip('"')
             # Check if both parent and child contacts exist in partner_ids_map
-            if partner_id_one in partner_ids_map and partner_id_two in partner_ids_map and (duplicates[partner_id_one] != 'duplicate' or duplicates[partner_id_two] != 'duplicate'):
+            if (partner_id_one in partner_ids_map and partner_id_two in partner_ids_map and 
+               (duplicates[partner_id_one] != 'duplicate' or duplicates[partner_id_two] != 'duplicate')):
                 parent = 0
                 child = 0
                 if is_szulo_map[partner_id_one] == True:
@@ -186,17 +220,30 @@ def import_contacts(csv_file_path, relation_file_path):
                 try:
                     create_family_relation(parent, child)
                 except Exception as e:
-                    print(f"Failed to create relationship between ID ", partner_ids_map[partner_id_one], " and ID " , partner_ids_map[partner_id_two])
+                    msg = (f"Failed to create relationship between ID {partner_ids_map[partner_id_one]} "
+                           f"and ID {partner_ids_map[partner_id_two]} due to error: {e}")
+                    logger.error(msg)
+                    except_logs.append(msg)
                     # If creating the family relation fails, delete the partners created in Step 1
                     models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[partner_ids_map[partner_id_one]]])
                     models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[partner_ids_map[partner_id_two]]])
-                    print(f"Deleted partners with ID ", partner_ids_map[partner_id_one], " and ID ", partner_ids_map[partner_id_two])
+                    del_msg = (f"Deleted partners with ID {partner_ids_map[partner_id_one]} "
+                               f"and ID {partner_ids_map[partner_id_two]}")
+                    logger.error(del_msg)
+                    except_logs.append(del_msg)
             else:
-                print(f"Relationship error: One or both contacts not found for ID ", partner_ids_map[partner_id_one], " and ID ", partner_ids_map[partner_id_two], " or partner(s) already exist(s)")
+                msg = (f"Relationship error: One or both contacts not found for ID ", 
+                       partner_ids_map[partner_id_one], " and ID ", 
+                       partner_ids_map[partner_id_two], " "
+                       "or partner(s) already exist(s)")
+                logger.error(msg)
+                except_logs.append(msg)
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print("Usage: {} <contacts_csv_file_path> <relations_csv_file_path>".format(sys.argv[0]))
+        usage_msg = "Usage: {} <contacts_csv_file_path> <relations_csv_file_path>".format(sys.argv[0])
+        logger.info(usage_msg)
+        try_logs.append(usage_msg)
         sys.exit(1)
     csv_file_path = sys.argv[1]
     relation_file_path = sys.argv[2]
