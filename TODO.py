@@ -86,7 +86,7 @@
 #+TODO: A try and except legyen külön tömben a sikeres és sikertelen 
 # alapján (2 külön tömb), majd a végén ezek legyenek benne egy 
 # log fileban --> https://docs.python.org/3/howto/logging.html#logging-to-a-file
-#TODO: kapcsoló --> script preflight 
+#+TODO: kapcsoló --> script preflight 
 # (Olyan funkció, hogy végigmegy, de nincs adatmódosítás. 
 # Lépéseket lehet elvégezni, de nem történik adatbázisba rögzítés. 
 # Kapcsolatok létrehozásánál lesz jó. Nem kell módosítani az adatbázist,
