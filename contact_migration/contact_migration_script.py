@@ -8,7 +8,7 @@ import logging
 from datetime import datetime
 
 # Set dry run mode switch
-dry_run = True  # Set to True for a dry run (simulation), False to apply changes
+dry_run =  True # Set to True for a dry run (simulation), False to apply changes
 dry_run_family_relation = {}    # Helps with checking wether a family connection could be succesfully made using dry_run mode
 
 # Configure logging
@@ -38,23 +38,20 @@ username = 'budapest@hashomerhatzair-eu.com'
 password = 'MarciAdrianDev'
 # --------------------------
 
-# Connect to Odoo's XML-RPC API
-unverified_ctx = ssl._create_unverified_context()
-common = xmlrpc.client.ServerProxy(
-    f'{url}/xmlrpc/2/common',
-    context=unverified_ctx
-)
-uid = common.authenticate(db, username, password, {})
-if not uid:
-    msg = "Authentication failed!"
-    logger.error(msg)
-    except_logs.append(msg)
-    sys.exit(1)
-# Connect to the object endpoint using the same unverified context
-models = xmlrpc.client.ServerProxy(
-    f'{url}/xmlrpc/2/object',
-    context=unverified_ctx
-)
+# Connect to Odoo's XML-RPC API only if not in dry run mode.
+if not dry_run:
+    common = xmlrpc.client.ServerProxy('{}/xmlrpc/2/common'.format(url))
+    uid = common.authenticate(db, username, password, {})
+    if not uid:
+        msg = "Authentication failed!"
+        logger.error(msg)
+        except_logs.append(msg)
+        sys.exit(1)
+    models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url))
+else:
+    # In dry run mode, assign dummy values.
+    uid = 1
+    models = None  # No API calls will be performed in dry run
 
 def normalize_date(date_str):
     """
@@ -276,7 +273,7 @@ def import_contacts(csv_file_path, relation_file_path, dry_run=False):
                         except_logs.append(del_msg)
             else:
                 msg = (f"Relationship error: One or both contacts not found for IDs "
-                       f"{partner_ids_map[partner_id_one]} and {partner_ids_map[partner_id_one]}"
+                       f"{partner_ids_map[partner_id_one]} and {partner_ids_map[partner_id_two]}"
                        " or partner(s) already exist(s)")
                 logger.error(msg)
                 except_logs.append(msg)
