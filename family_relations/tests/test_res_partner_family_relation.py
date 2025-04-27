@@ -7,7 +7,7 @@ class TestPartnerFamilyRelation(common.TransactionCase):
         # Create some test partners
         self.partner_a = self.env['res.partner'].create({'name': 'Partner A'})
         self.partner_b = self.env['res.partner'].create({'name': 'Partner B'})
-
+    
     def test_01_create_reciprocal(self):
         """
         Test that creating a family relation automatically creates

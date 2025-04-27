@@ -95,8 +95,4 @@
 # visszagörgetés egy checkpoint-hoz --> 
 # két utasítás közötti történéseket vissza lehet csinálni. 
 # Benne van az Odoo-ban? 
-# - utánanézni (segítség: database transaction rollback commit): 
-# Van database rollback funkció a database manager-ében az Odoo-nak,
-# de nem tudok belépni a master password miatt, 
-# amit múltkor is néztünk. Mást nem találtam ezen kívül, 
-# ami segítene az adatbázisba történő adatfelvitel visszavonásában.
+# - utánanézni (segítség: database transaction rollback commit)
