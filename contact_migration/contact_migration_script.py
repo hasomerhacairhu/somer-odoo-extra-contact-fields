@@ -8,7 +8,7 @@ import logging
 from datetime import datetime
 
 # Set dry run mode switch
-dry_run =  True # Set to True for a dry run (simulation), False to apply changes
+dry_run =  False # Set to True for a dry run (simulation), False to apply changes
 dry_run_family_relation = {}    # Helps with checking wether a family connection could be succesfully made using dry_run mode
 
 # Configure logging
@@ -231,10 +231,13 @@ def import_contacts(csv_file_path, relation_file_path, dry_run=False):
                 msg = f"Partner '{full_name}' already exists with ID {existing_partner[0]}"
                 logger.info(msg)
                 try_logs.append(msg)
+
+        #TODO: A for ciklus után hozzáfűzöm egy JSON fájlhoz a megszerzett map-ot
     
     # Step 2: Create Parent-Child Relationships
     with open(relation_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
+        #TODO: Visszaolvasom a teljes JSON fájl-t a partner_ids_map változóba
         for row in reader:
             relation_data = row.get('crmid,"relcrmid"', '').split(',')
             partner_id_one = relation_data[0]
@@ -277,6 +280,8 @@ def import_contacts(csv_file_path, relation_file_path, dry_run=False):
                        " or partner(s) already exist(s)")
                 logger.error(msg)
                 except_logs.append(msg)
+
+        #TODO: JSON fájlba visszaírjuk a teljes partner_ids_map tartalmát, szinkronba hozzuk a memóriát és a JSON fájl-t
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:

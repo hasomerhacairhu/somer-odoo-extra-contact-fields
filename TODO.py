@@ -83,6 +83,7 @@
 
 #+TODO: név és e-mail együttes alapján legyen az existing partner!
 #+TODO: Stakeholder alapján dől el, hogy ki a szülő!
+#TODO: UTF-8 problémának utána nézni, ékezetes importálás unblock, utána nézni: lehet, hogy dictionary-vel működnének az ékezetek a stakeholder JSON-ben
 #+TODO: A try and except legyen külön tömben a sikeres és sikertelen 
 # alapján (2 külön tömb), majd a végén ezek legyenek benne egy 
 # log fileban --> https://docs.python.org/3/howto/logging.html#logging-to-a-file
@@ -91,8 +92,10 @@
 # Lépéseket lehet elvégezni, de nem történik adatbázisba rögzítés. 
 # Kapcsolatok létrehozásánál lesz jó. Nem kell módosítani az adatbázist,
 # látni lehet előre a problémákat.)
+#TODO: JSON fájlba a partner_ids_map értékei (.append()), visszaolvastatás miután bele lettek írva
 #+TODO: Belépési pont megjelölése --> rollback, 
 # visszagörgetés egy checkpoint-hoz --> 
 # két utasítás közötti történéseket vissza lehet csinálni. 
 # Benne van az Odoo-ban? 
 # - utánanézni (segítség: database transaction rollback commit)
+#TODO: Tesztelés, database visszatöltése
