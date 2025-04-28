@@ -1,0 +1,38 @@
+{
+    "partner_ids_map": {
+        "817": 409,
+        "820": 410,
+        "821": 411,
+        "822": 412,
+        "823": 413,
+        "824": 414,
+        "825": 415,
+        "826": 416,
+        "827": 417,
+        "828": 418
+    },
+    "duplicates": {
+        "817": "non-duplicate",
+        "820": "non-duplicate",
+        "821": "non-duplicate",
+        "822": "non-duplicate",
+        "823": "non-duplicate",
+        "824": "non-duplicate",
+        "825": "non-duplicate",
+        "826": "non-duplicate",
+        "827": "non-duplicate",
+        "828": "non-duplicate"
+    },
+    "is_szulo_map": {
+        "817": false,
+        "820": true,
+        "821": false,
+        "822": true,
+        "823": false,
+        "824": true,
+        "825": false,
+        "826": false,
+        "827": true,
+        "828": false
+    }
+}

@@ -6,9 +6,11 @@ import io
 import sys
 import logging
 from datetime import datetime
+import json
+import os
 
 # Set dry run mode switch
-dry_run =  False # Set to True for a dry run (simulation), False to apply changes
+dry_run = False # Set to True for a dry run (simulation), False to apply changes
 dry_run_family_relation = {}    # Helps with checking wether a family connection could be succesfully made using dry_run mode
 
 # Configure logging
@@ -133,11 +135,11 @@ def create_family_relation(parent_id, child_id, relationship_type="child", dry_r
         logger.error(deletion_msg)
         except_logs.append(deletion_msg)
 
-def import_contacts(csv_file_path, relation_file_path, dry_run=False):
+def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=False):
     # Step 1: Import Contacts
     partner_ids_map = {}  # Maps contactid -> partner_id
     duplicates = {}       # Dictionary to check if a contact was already created
-    is_szulo_map = {}     # Maps contactid -> True if "Szulo" in stakeholder field
+    is_szulo_map = {}     # Maps contactid -> True if "Szülő" in stakeholder field
     
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -161,7 +163,7 @@ def import_contacts(csv_file_path, relation_file_path, dry_run=False):
             option_ids = get_stakeholder_option_ids(stakeholder_str, dry_run=dry_run)
             
             contact_key = row.get('contactid', '')
-            is_szulo_map[contact_key] = ('Szulo' in stakeholder_str)
+            is_szulo_map[contact_key] = ('Szülő' in stakeholder_str)
 
             # Convert string booleans.
             madrich_training = (row.get('madrich_training', '') == '1')
@@ -232,12 +234,36 @@ def import_contacts(csv_file_path, relation_file_path, dry_run=False):
                 logger.info(msg)
                 try_logs.append(msg)
 
-        #TODO: A for ciklus után hozzáfűzöm egy JSON fájlhoz a megszerzett map-ot
+    # JSON: After the for loop, write the maps out to JSON
+    try:
+        with open(map_json_path, 'w', encoding='utf-8') as jf:
+            json.dump({
+                'partner_ids_map': partner_ids_map,
+                'duplicates': duplicates,
+                'is_szulo_map': is_szulo_map,
+            }, jf, ensure_ascii=False, indent=4)
+        logger.info(f"JSON file successfully saved to {map_json_path}")
+    except Exception as e:
+        logger.error(f"Error saving JSON file: {e}")
     
     # Step 2: Create Parent-Child Relationships
+
+    # JSON: Load the full JSON file back into memory
+    try:
+        with open(map_json_path, 'r', encoding='utf-8') as jf:
+            stored = json.load(jf)
+            partner_ids_map = stored.get('partner_ids_map', {})
+            duplicates = stored.get('duplicates', {})
+            is_szulo_map = stored.get('is_szulo_map', {})
+    except FileNotFoundError:
+        logger.error(f"Mapping JSON file not found at {map_json_path}; cannot build relations.")
+        return
+    except Exception as e:
+        logger.error(f"Error loading mapping JSON file: {e}")
+        return
+    
     with open(relation_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
-        #TODO: Visszaolvasom a teljes JSON fájl-t a partner_ids_map változóba
         for row in reader:
             relation_data = row.get('crmid,"relcrmid"', '').split(',')
             partner_id_one = relation_data[0]
@@ -281,14 +307,25 @@ def import_contacts(csv_file_path, relation_file_path, dry_run=False):
                 logger.error(msg)
                 except_logs.append(msg)
 
-        #TODO: JSON fájlba visszaírjuk a teljes partner_ids_map tartalmát, szinkronba hozzuk a memóriát és a JSON fájl-t
+    # JSON: Write the updated maps back to the JSON file to keep file & memory in sync
+    try:
+        with open(map_json_path, 'w', encoding='utf-8') as jf:
+            json.dump({
+                'partner_ids_map': partner_ids_map,
+                'duplicates':       duplicates,
+                'is_szulo_map':     is_szulo_map,
+            }, jf, ensure_ascii=False, indent=4)
+        logger.info(f"Updated mapping JSON file saved to {map_json_path}")
+    except Exception as e:
+        logger.error(f"Error saving updated mapping JSON file: {e}")
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        usage_msg = "Usage: {} <contacts_csv_file_path> <relations_csv_file_path>".format(sys.argv[0])
+    if len(sys.argv) != 4:
+        usage_msg = "Usage: {} <contacts_csv_file_path> <relations_csv_file_path> <map_json_output_path>".format(sys.argv[0])
         logger.info(usage_msg)
         try_logs.append(usage_msg)
         sys.exit(1)
     csv_file_path = sys.argv[1]
     relation_file_path = sys.argv[2]
-    import_contacts(csv_file_path, relation_file_path, dry_run=dry_run)
+    map_json_path = sys.argv[3]
+    import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=dry_run)

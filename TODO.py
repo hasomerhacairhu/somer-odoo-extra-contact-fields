@@ -41,7 +41,7 @@
 # amikor ténylegesen változás történik (egész szám az életkorban, új dátum a következő születésnapnál), 
 # hogy ne legyen tele a log felesleges adatokkal!
 
-#TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, 
+#+TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, 
 # a web-es interface-n belül meg nem találtam a saját Unit Test-jeimet)
 # https://www.odoo.com/documentation/18.0/developer/reference/backend/testing.html
 
@@ -83,7 +83,7 @@
 
 #+TODO: név és e-mail együttes alapján legyen az existing partner!
 #+TODO: Stakeholder alapján dől el, hogy ki a szülő!
-#TODO: UTF-8 problémának utána nézni, ékezetes importálás unblock, utána nézni: lehet, hogy dictionary-vel működnének az ékezetek a stakeholder JSON-ben
+#+TODO: UTF-8 problémának utána nézni, ékezetes importálás unblock, utána nézni: lehet, hogy dictionary-vel működnének az ékezetek a stakeholder JSON-ben
 #+TODO: A try and except legyen külön tömben a sikeres és sikertelen 
 # alapján (2 külön tömb), majd a végén ezek legyenek benne egy 
 # log fileban --> https://docs.python.org/3/howto/logging.html#logging-to-a-file
@@ -92,10 +92,14 @@
 # Lépéseket lehet elvégezni, de nem történik adatbázisba rögzítés. 
 # Kapcsolatok létrehozásánál lesz jó. Nem kell módosítani az adatbázist,
 # látni lehet előre a problémákat.)
-#TODO: JSON fájlba a partner_ids_map értékei (.append()), visszaolvastatás miután bele lettek írva
+#+TODO: JSON fájlba a partner_ids_map értékei (.append()), visszaolvastatás miután bele lettek írva
 #+TODO: Belépési pont megjelölése --> rollback, 
 # visszagörgetés egy checkpoint-hoz --> 
 # két utasítás közötti történéseket vissza lehet csinálni. 
 # Benne van az Odoo-ban? 
 # - utánanézni (segítség: database transaction rollback commit)
-#TODO: Tesztelés, database visszatöltése
+#+TODO: Tesztelés, database visszatöltése - 
+# a restore file elvileg működne, csak valami olyasmi a baj,
+# hogy "single database" módban van az Odoo szerver,
+# ezért nem látni az adatbázisok listájában a restored vagy
+# a duplicated adatbázisokat, csak az odoo_dev jelenik meg
