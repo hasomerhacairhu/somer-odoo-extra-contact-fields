@@ -1,0 +1,1 @@
+py contact_migration_script.py vtiger_contactdetails.csv u_yf_contacts_contacts.csv partner_map.json
