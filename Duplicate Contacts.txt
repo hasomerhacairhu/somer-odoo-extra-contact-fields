@@ -1,0 +1,3 @@
+2025-05-06 16:23:49,908 - INFO - Partner 'Hanna Barczy' already exists with ID 1157
+
+2025-05-06 16:24:42,324 - INFO - Partner '�kos Dudka' already exists with ID 1572

@@ -10,7 +10,7 @@ import json
 import os
 
 # Set dry run mode switch
-dry_run = False # Set to True for a dry run (simulation), False to apply changes
+dry_run = True # Set to True for a dry run (simulation), False to apply changes
 dry_run_family_relation = {}    # Helps with checking wether a family connection could be succesfully made using dry_run mode
 
 # Configure logging
@@ -35,7 +35,7 @@ except_logs = []
 # --------------------------
 # Destination Configuration
 url = 'https://odoodev.somer.hu'
-db = 'odoo_dev_2'
+db = 'odoo_dev'
 username = 'budapest@hashomerhatzair-eu.com'
 password = 'MarciAdrianDev'
 # --------------------------
@@ -49,7 +49,7 @@ if not dry_run:
         logger.error(msg)
         except_logs.append(msg)
         sys.exit(1)
-    models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url), allow_none=True)
+    models = xmlrpc.client.ServerProxy('{}/xmlrpc/2/object'.format(url))
 else:
     # In dry run mode, assign dummy values.
     uid = 1
@@ -61,7 +61,7 @@ def normalize_date(date_str):
     to 'YYYY-MM-DD'.
     """
     if not date_str:
-        return None
+        return ''
     for fmt in ("%Y-%m-%d", "%Y.%m.%d"):
         try:
             dt = datetime.strptime(date_str, fmt)
@@ -69,22 +69,6 @@ def normalize_date(date_str):
         except ValueError:
             continue
     return date_str
-
-def preprocess_row(row):
-    """
-    Preprocess a row from the CSV file:
-    - Replace 'NULL' with None.
-    - Normalize date fields.
-    """
-    processed_row = {}
-    for key, value in row.items():
-        if value == 'NULL' or value == '':
-            processed_row[key] = None  # Replace 'NULL' with None
-        elif key in ['passport_exp_date', 'birthday', 'next_birthday']:
-            processed_row[key] = normalize_date(value) if value else None
-        else:
-            processed_row[key] = value.strip() if value else None
-    return processed_row
 
 def get_stakeholder_option_ids(stakeholder_str, dry_run=False):
     """
@@ -117,14 +101,19 @@ def get_stakeholder_option_ids(stakeholder_str, dry_run=False):
             option_ids.append(option_id)
     return option_ids
 
-def create_family_relation_parent(parent_id, child_id, relationship_type="child", dry_run=False):
+def create_family_relation(parent_id, child_id, relationship_type="child", dry_run=False, dry_run_no_parent=False):
     """Create a family relationship between parent and child."""
     if dry_run:
-        msg = f"Dry run: Would create family relation between Parent ID {parent_id} and Child ID {child_id}"
-        logger.info(msg)
-        try_logs.append(msg)
-        return
-
+        if not dry_run_no_parent:
+            msg = f"Dry run: Would create family relation between Parent ID {parent_id} and Child ID {child_id}"
+            logger.info(msg)
+            try_logs.append(msg)
+            return
+        else:
+            msg = f"Dry run: Would not create family relation between ID {parent_id} and ID {child_id} because there is no parent"
+            logger.error(msg)
+            except_logs.append(msg)
+            return
     try:
         models.execute_kw(db, uid, password,
                           'res.partner.family.relation', 'create', [{
@@ -146,34 +135,6 @@ def create_family_relation_parent(parent_id, child_id, relationship_type="child"
         logger.error(deletion_msg)
         except_logs.append(deletion_msg)
 
-def create_family_relation_sibling(sibling_id_one, sibling_id_two, relationship_type="sibling", dry_run=False):
-    """Create a family relationship between parent and child."""
-    if dry_run:
-            msg = f"Dry run: Would create family relation between Sibling ID {sibling_id_one} and Sibling ID {sibling_id_two}"
-            logger.info(msg)
-            try_logs.append(msg)
-            return
-    try:
-        models.execute_kw(db, uid, password,
-                          'res.partner.family.relation', 'create', [{
-                              'partner_id': sibling_id_one,
-                              'related_partner_id': sibling_id_two,
-                              'relationship_type': relationship_type,
-                          }])
-        msg = f"Created family relation between Sibling ID {sibling_id_one} and Sibling ID {sibling_id_two}"
-        logger.info(msg)
-        try_logs.append(msg)
-    except Exception as e:
-        msg = f"Failed to create relationship between ID {sibling_id_one} and ID {sibling_id_two} due to: {e}"
-        logger.error(msg)
-        except_logs.append(msg)
-        # If creating the family relation fails, delete the partners created in Step 1
-        models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[sibling_id_one]])
-        models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[sibling_id_two]])
-        deletion_msg = f"Deleted partners with ID {sibling_id_one} and ID {sibling_id_two}"
-        logger.error(deletion_msg)
-        except_logs.append(deletion_msg)
-
 def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=False):
     # Step 1: Import Contacts
     partner_ids_map = {}  # Maps contactid -> partner_id
@@ -183,12 +144,10 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
-            row = preprocess_row(row)  # Preprocess the row
-
             # Combine first and last names for full name.
             first_name = row.get('firstname', '')
             last_name = row.get('lastname', '')
-            full_name = f"{last_name} {first_name}".strip()
+            full_name = f"{first_name} {last_name}".strip()
 
             # Determine nickname: use provided nickname or default to first_name.
             nickname = row.get('nickname', '')
@@ -196,17 +155,11 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
                 nickname = first_name
             
             # Normalize date fields.
-            if not row.get('birthdate') == 'NULL' or None:
-                birthday = normalize_date(row.get('birthday', ''))
-            else:
-                birthday = None
-            if not row.get('passport_exp_date') == 'NULL' or None:
-                passport_exp_date = normalize_date(row.get('passport_exp_date', ''))
-            else:
-                passport_exp_date = None
+            birthday = normalize_date(row.get('birthday', ''))
+            passport_exp_date = normalize_date(row.get('passport_exp_date', ''))
 
             # Process stakeholder field.
-            stakeholder_str = str(row.get('stakeholder', ''))
+            stakeholder_str = row.get('stakeholder', '')
             option_ids = get_stakeholder_option_ids(stakeholder_str, dry_run=dry_run)
             
             contact_key = row.get('contactid', '')
@@ -217,29 +170,12 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
             is_vaccinated = (row.get('vaccinated', '') == '1')
             is_active = (row.get('active', '') == '1')
 
-            country = row.get('addresslevel1a', '')
-            if country == 'NULL':
-                country = None
-            city = row.get('addresslevel5a', '')
-            if city == 'NULL':
-                city = None
-            county = row.get('addresslevel6a', '')
-            if county == 'NULL':
-                county = None
-            zip = row.get('addresslevel7a', '')
-            if zip == 'NULL':
-                zip = None
-
             # Build the partner values dictionary.
             partner_vals = {
                 'name': full_name,
                 'email': row.get('email', ''),
                 'phone': row.get('phone', ''),
                 'Nickname': nickname,
-                'country_id': country,
-                'city': city,
-                'state_id': county,
-                'zip': zip,
                 'StakeholderGroup': [(6, 0, option_ids)],
                 'BirthDate': birthday,
                 'IDNumber': row.get('id_number', ''),
@@ -256,7 +192,7 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
             }
 
             contact_id = row.get('contactid', '')
-            email_field = row.get('email', '')
+            email_field = row.get('email', '').strip()
             if email_field:
                 domain = [('name', '=', full_name), ('email', '=', email_field)]
             else:
@@ -331,42 +267,30 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
         for row in reader:
             partner_id_one = row.get('crmid', '').strip('"')
             partner_id_two = row.get('relcrmid', '').strip('"')
+
             if not partner_id_one or not partner_id_two:
                 logger.warning(f"Skipping malformed row: {row}")
                 continue  # Skip this row if either value is missing
-
             if (partner_id_one in partner_ids_map and partner_id_two in partner_ids_map and 
                (duplicates[partner_id_one] != 'duplicate' or duplicates[partner_id_two] != 'duplicate')):
                 parent = 0
                 child = 0
+                dry_run_no_parent = False
+                if dry_run:
+                    parent = dry_run_family_relation[partner_id_one]
+                    child = dry_run_family_relation[partner_id_two]
+                    dry_run_no_parent = True
                 if is_szulo_map[partner_id_one]:
                     parent = partner_ids_map[partner_id_one]
                     child = partner_ids_map[partner_id_two]
+                    dry_run_no_parent = False
                 elif is_szulo_map[partner_id_two]:
                     child = partner_ids_map[partner_id_one]
                     parent = partner_ids_map[partner_id_two]
-                # If there is no parent, automatically resort to sibling relation
-                else:
-                    sibling_one = partner_ids_map[partner_id_one]
-                    sibling_two = partner_ids_map[partner_id_two]
-                    try:
-                        create_family_relation_sibling(sibling_one, sibling_two, dry_run=dry_run)
-                    except Exception as e:
-                        msg = (f"Failed to create relationship between ID {partner_ids_map[partner_id_one]} "
-                           f"and ID {partner_ids_map[partner_id_two]} due to error: {e}")
-                        logger.error(msg)
-                        except_logs.append(msg)
-                        if not dry_run:
-                            models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[partner_ids_map[partner_id_one]]])
-                            models.execute_kw(db, uid, password, 'res.partner', 'unlink', [[partner_ids_map[partner_id_two]]])
-                            del_msg = (f"Deleted partners with ID {partner_ids_map[partner_id_one]} "
-                                   f"and ID {partner_ids_map[partner_id_two]}")
-                            logger.error(del_msg)
-                            except_logs.append(del_msg)
+                    dry_run_no_parent = False
 
                 try:
-                    if parent and child:
-                        create_family_relation_parent(parent, child, dry_run=dry_run)
+                    create_family_relation(parent, child, dry_run=dry_run, dry_run_no_parent=dry_run_no_parent)
                 except Exception as e:
                     msg = (f"Failed to create relationship between ID {partner_ids_map[partner_id_one]} "
                            f"and ID {partner_ids_map[partner_id_two]} due to error: {e}")
