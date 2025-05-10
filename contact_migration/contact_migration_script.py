@@ -35,7 +35,7 @@ except_logs = []
 # --------------------------
 # Destination Configuration
 url = 'https://odoodev.somer.hu'
-db = 'odoo_dev_2'
+db = 'odoo_dev'
 username = 'budapest@hashomerhatzair-eu.com'
 password = 'MarciAdrianDev'
 # --------------------------
@@ -179,6 +179,8 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
     partner_ids_map = {}  # Maps contactid -> partner_id
     duplicates = {}       # Dictionary to check if a contact was already created
     is_szulo_map = {}     # Maps contactid -> True if "Szülő" in stakeholder field
+    country_cache = {}    # Cache to store countries for saving processing power while running the script and avoiding script errors
+    state_cache = {}      # Cache to store states/counties for saving processing power while running the script and avoiding script errors
     
     with open(csv_file_path, mode='r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
@@ -217,18 +219,31 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
             is_vaccinated = (row.get('vaccinated', '') == '1')
             is_active = (row.get('active', '') == '1')
 
-            country = row.get('addresslevel1a', '')
-            if country == 'NULL':
-                country = None
+            state_name = row.get('addresslevel6a', '')
+            if state_name not in state_cache:
+                state_id = models.execute_kw(db, uid, password,
+                'res.country.state', 'search',
+                [[['name', '=', state_name]]], {'limit': 1})
+                state_cache[state_name] = state_id[0] if state_id else None
+            else:
+                state_id = state_cache[state_name]
+            
             city = row.get('addresslevel5a', '')
             if city == 'NULL':
                 city = None
-            county = row.get('addresslevel6a', '')
-            if county == 'NULL':
-                county = None
+            
             zip = row.get('addresslevel7a', '')
             if zip == 'NULL':
                 zip = None
+            
+            street = row.get('addresslevel8a')
+            if street == 'NULL':
+                street = None
+            
+            street2 = row.get('buildingnumbera')
+            if street2 == 'NULL':
+                street2 = None
+            
 
             # Build the partner values dictionary.
             partner_vals = {
@@ -236,10 +251,11 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
                 'email': row.get('email', ''),
                 'phone': row.get('phone', ''),
                 'Nickname': nickname,
-                'country_id': country,
+                'state_id': state_id,
                 'city': city,
-                'state_id': county,
                 'zip': zip,
+                'street': street,
+                'street2': street2,
                 'StakeholderGroup': [(6, 0, option_ids)],
                 'BirthDate': birthday,
                 'IDNumber': row.get('id_number', ''),
