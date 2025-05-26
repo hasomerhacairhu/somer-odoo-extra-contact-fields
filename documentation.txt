@@ -1,0 +1,24 @@
+Részletes Dokumentáció - 2025.05.26.
+
+Az SRS-ben összefoglalt feladatok nagy része elkészült. A munka teljes egészében Git verziókövető rendszer mellett zajlott, rendszeres commit-olással. Az Odoo modul 
+fejlesztési standardjainak megfelelően és az Odoo API-k, dekorátorok használata mellett készült el minden modul. A kód minden lényeges részéhez hozzá lett fűzve megjegyzés, 
+ami később fogja segíteni az esetleges módosításokat, javításokat, ha azok szükségesnek bizonyosulnak. A változók, fájlok, mappák elnevezése a camelCase, 
+snake_case szabványok alkalmazása mellett történt. Az Odoo Contact Enhancement Module projektfeladat megoldása három nagy lépésben foglalható össze,
+melyekről lejjebb lesz részletesebben szó: 1. contact_extension modul elkészítése, 2. family_relations modul elkészítése, 3. contact_migration protokoll futtatása.
+A telepítést, futtatást a következő sorrendben kell elvégezni: 1. contact_extension telepítése, 2. family_relations telepítése, 
+3. contact_migration lefuttatása az adatok Yetiforce rendszerből az Odoo rendszerbe való áttelepítéséhez.
+
+Az Odoo rendszerbe integrálva lettek az új adatmezők a leírtaknak megfelelően. Ebbe beleértendő többek között például az ExitReason mező dinamikus láthatósága, 
+ami az ExitDate mező értékétől függ (ha meg van adva érték az ExitDate-hez, akkor megjelenik az ExitReason), illetve az Age, NextBirthday mezők automatikus kalkulációja 
+egy eseményfigyelő mechanizmus segítségével, amely mezők, pedig a BirthDate mező értékétől függenek. Ezen kívül a JSON fájlokban történő adattárolás is meg lett valósítva 
+a StakeholderGroup, MembershipLevel, TShirtSize mezők adatainak könnyebb megőrzése, konfigurálása érdekében, ami hatékonyabbá, gyorsabbá teszi a kódkezelést.
+
+Ezt követően a családi kapcsolatok kezelése funkció is implementálva lett. Ennek segítségével a felhasználó különböző, az Odoo rendszerben létező kontaktokat tud társítani a profiljához,
+ami kölcsönös működéssel lett megvalósítva (ha a felhasználó a profiljához köt egy másikat, a másik oldalon is automatikusan megtörténik a társítás). 
+A jelenleg létrehozható kapcsolatok típusai: szülő, gyermek, testvér, nagyszülő, unoka, unokatestvér, egyéb.
+
+Végül az Odoo adatmezőkkel történő bővítését követően sor került egy python script megírására, amely csv fájlokat felhasználva a Yetiforce rendszerből beimportálja az adatokat az
+Odoo rendszerbe. Ehhez a mappához készült egy log file is, amely minden egyes futtatás lényeges részleteit dokumentálja. Ezen kívül be lett építve egy dry_run funkcionalitás is a kódba,
+ami lehetővé teszi a tesztelési futtatásokat, hogy nagyobb eséllyel lehessen elkerülni az éles futás során felmerülő problémákat.
+
+Hátralévő feladat a contact_extension és family_relations modulokhoz elkészült unit tesztek futtatása, amelyeket nem sikerült lefuttatni.

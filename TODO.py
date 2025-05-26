@@ -41,7 +41,7 @@
 # amikor ténylegesen változás történik (egész szám az életkorban, új dátum a következő születésnapnál), 
 # hogy ne legyen tele a log felesleges adatokkal!
 
-#+TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, 
+#TODO: Unit Tesztek lefuttatása! Family Connections Unit Teszt írása! (Nem megy bash-en commandokkal, 
 # a web-es interface-n belül meg nem találtam a saját Unit Test-jeimet)
 # https://www.odoo.com/documentation/18.0/developer/reference/backend/testing.html
 
