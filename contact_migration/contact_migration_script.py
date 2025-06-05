@@ -243,6 +243,27 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
             street2 = row.get('buildingnumbera')
             if street2 == 'NULL':
                 street2 = None
+
+            # Get the raw country name from the CSV row
+            country_name = row.get('addresslevel1a', None)
+            if country_name in (None, 'NULL', ''):
+                country_id = None
+            else:
+                # If not yet in cache, do a search for res.country with name = country_name
+                if country_name not in country_cache:
+                # In dry_run we don’t actually hit Odoo; just store a dummy ID
+                    if dry_run:
+                        country_cache[country_name] = f"dry_{country_name}"
+                    else:
+                        country_search = models.execute_kw(
+                        db, uid, password,
+                        'res.country', 'search',
+                        [[['name', '=', country_name]]],  # look up by exact name
+                        {'limit': 1}
+                    )
+                    country_cache[country_name] = country_search[0] if country_search else None
+
+                country_id = country_cache[country_name]
             
 
             # Build the partner values dictionary.
@@ -251,6 +272,7 @@ def import_contacts(csv_file_path, relation_file_path, map_json_path, dry_run=Fa
                 'email': row.get('email', ''),
                 'phone': row.get('phone', ''),
                 'Nickname': nickname,
+                'country_id': country_id,
                 'state_id': state_id,
                 'city': city,
                 'zip': zip,
