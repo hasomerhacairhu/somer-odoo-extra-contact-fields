@@ -32,13 +32,7 @@ logger.addHandler(file_handler)
 try_logs = []
 except_logs = []
 
-# --------------------------
-# Destination Configuration
-url = 'https://odoodev.somer.hu'
-db = 'odoo_dev'
-username = 'budapest@hashomerhatzair-eu.com'
-password = 'MarciAdrianDev'
-# --------------------------
+
 
 # Connect to Odoo's XML-RPC API only if not in dry run mode.
 if not dry_run:
